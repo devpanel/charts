@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  strategy:
+    type: {{ .Values.strategy }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        {{ if .Values.images.php.name }}
+        - name: php
+          resources:
+            {{- toYaml .Values.images.php.resources | nindent 12 }}
+          image: "{{ .Values.images.php.name }}:{{ .Values.images.php.version }}"
+          imagePullPolicy: {{ .Values.images.php.pullPolicy }}
+          env:
+            {{- if .Values.images.php.env }}
+            {{- toYaml .Values.images.php.env | nindent 12 }}
+            {{- end }}
+            {{ if .Values.codeserver.isEnabled }}
+            - name: CODES_ENABLE
+              value: "true"
+            {{ else }}
+            - name: CODES_ENABLE
+              value: ""
+            {{ end  }}
+            {{ if .Values.application.dbName }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.fullname" . }}
+                  key: "DB_HOST"
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.fullname" . }}
+                  key: "DB_NAME"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.fullname" . }}
+                  key: "DB_USER"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.fullname" . }}
+                  key: "DB_PASSWORD"
+            {{ end }}
+          ports:
+            - containerPort: {{ .Values.images.php.containerPort }}
+            {{ if .Values.codeserver.isEnabled }}
+            - name: codeserver
+              containerPort: 8080
+              protocol: TCP
+            {{ end }}
+          resources:
+            {{- toYaml .Values.images.php.resources | nindent 12 }}
+          volumeMounts:
+            - name: app-volume
+              mountPath: "{{ .Values.application.appRoot }}"
+        {{ end }}
+        {{ if .Values.images.nginx.name }}
+        - name: nginx
+          image: "{{ .Values.images.nginx.name }}:{{ .Values.images.nginx.version }}"
+          imagePullPolicy: {{ .Values.images.nginx.pullPolicy }}
+          env:
+            {{- if .Values.images.nginx.env }}
+            {{- toYaml .Values.images.nginx.env | nindent 12 }}
+            {{- end }}
+          ports:
+            - containerPort: {{ .Values.images.nginx.containerPort }}
+              name: http
+          resources:
+            {{- toYaml .Values.images.nginx.resources | nindent 12 }}
+          volumeMounts:
+            - name: app-volume
+              mountPath: "{{ .Values.application.appRoot }}"
+            {{ if eq .Values.application.type "magento2" }}
+            - name: custom-conf-tmpl
+              mountPath: /etc/gotpl/presets/magento2.conf.tmpl
+              subPath: magento2.conf.tmpl
+            {{ end }}
+        {{ end }}
+      volumes:
+        - name: app-volume
+          persistentVolumeClaim:
+            claimName: "{{ include "app.fullname" . }}"
+        {{ if eq .Values.application.type "magento2" }}
+        - name: custom-conf-tmpl
+          configMap:
+            name: {{ include "app.fullname" . }}
+        {{ end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

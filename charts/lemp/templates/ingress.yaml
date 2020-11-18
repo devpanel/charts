@@ -1,0 +1,104 @@
+{{- $fullName := include "app.fullname" . -}}
+{{- if .Values.ingress.enabled -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    konghq.com/override: "{{ $fullName }}"
+    kubernetes.io/ingress.class: "kong"
+    {{- include "app.ingress.annotations" . | nindent 4 }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+  {{- with .Values.application.hostNameTLSSecret }}
+    - hosts:
+      - {{ .Values.application.hostname }}
+      secretName: {{ . }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- with .Values.application.hostname }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+  {{- end}}
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.codeserver.isEnabled }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ $fullName }}-codeserver"
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    konghq.com/override: "{{ $fullName }}"
+    kubernetes.io/ingress.class: "kong"
+spec:
+  {{- if .Values.codeserver.secretName }}
+  tls:
+    - secretName: {{ .Values.codeserver.secretName | quote }}
+      hosts:
+        - {{ .Values.codeserver.hostname | quote }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.codeserver.hostname | quote }}
+      http:
+        paths:
+          - path: "/"
+            backend: 
+              serviceName: "{{ $fullName }}-codeserver"
+              servicePort: codeserver
+          - path: /devpanel/verify
+            backend:
+              serviceName: devpanel-authenticator
+              servicePort: 8080
+{{- end }}
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongIngress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+route:
+  {{ if .Values.ingress.forceSSL }}
+  protocols:
+    - https
+  https_redirect_status_code: 302
+  {{ else }}
+  protocols:
+    - http
+    - https
+  {{ end }}

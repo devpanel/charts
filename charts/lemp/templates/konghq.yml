@@ -1,0 +1,46 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongConsumer
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+  name: "{{ include "app.fullname" . }}-kong-consumer"
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+username: "{{ include "app.fullname" . }}-kong-consumer"
+credentials:
+  {{ if .Values.security.basicAuthentication.enabled }}
+  - "{{ include "app.fullname" . }}-kong-basic-auth"
+  {{ end }}
+  {{ if .Values.security.jwt.enabled }}
+  - "{{ include "app.fullname" . }}-kong-jwt"
+  {{ end }}
+
+{{- if .Values.security.basicAuthentication.enabled }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ include "app.fullname" . }}-kong-basic-auth"
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  kongCredType: {{ "basic-auth" | b64enc | quote }}
+  username: {{ .Values.security.basicAuthentication.username | b64enc | quote }}
+  password: {{ .Values.security.basicAuthentication.password | b64enc | quote }}
+type: Opaque
+{{- end }}
+
+{{- if .Values.security.jwt.enabled }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{ include "app.fullname" . }}-kong-jwt"
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+data:
+  kongCredType: {{ "jwt" | b64enc | quote }}
+  algorithm: {{ "HS256" | b64enc | quote }}
+  key: {{ .Values.security.jwt.key | b64enc | quote }}
+  secret: {{ .Values.security.jwt.secret | b64enc | quote }}
+{{- end }}

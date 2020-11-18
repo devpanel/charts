@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  {{ if .Values.security.basicAuthentication.enabled }}
+  annotations:
+    konghq.com/plugins: "devpanel-kong-basic-auth"
+  {{ end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.images.nginx.containerPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "app.selectorLabels" . | nindent 4 }}
+---
+{{ if .Values.codeserver.isEnabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ include "app.fullname" . }}-codeserver"
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    konghq.com/plugins: "devpanel-kong-jwt"
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: codeserver
+  selector:
+    {{- include "app.selectorLabels" . | nindent 4 }}
+{{- end -}}
