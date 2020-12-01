@@ -7,3 +7,4 @@ package:
 upload:
 	docker run -v="$(shell pwd):/app" -w="/app" --env-file .env quay.io/helmpack/chart-releaser:v1.1.1 sh -c \
 	"cr upload -o devpanel -r charts -p .deploy --token \$$CH_TOKEN"
+build: package upload index
