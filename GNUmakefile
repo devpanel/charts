@@ -1,8 +1,9 @@
 #https://tech.paulcz.net/blog/creating-a-helm-chart-monorepo-part-1/
-CH_TOKEN=""
 index:
-	cr index -p .deploy -c https://github.com/devpanel/charts -o devpanel --git-repo charts -i ./index.yaml
+	docker run -v="$(shell pwd):/app" -w="/app" --env-file .env quay.io/helmpack/chart-releaser:v1.1.1 sh -c \
+	"cr index -p .deploy -c https://github.com/devpanel/charts -o devpanel --git-repo charts -i ./index.yaml"
 package:
 	helm package charts/basic-hpa --destination .deploy
 upload:
-	 cr upload -o devpanel -r charts -p .deploy --token ${CH_TOKEN}
+	docker run -v="$(shell pwd):/app" -w="/app" --env-file .env quay.io/helmpack/chart-releaser:v1.1.1 sh -c \
+	"cr upload -o devpanel -r charts -p .deploy --token \$$CH_TOKEN"
