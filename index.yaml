@@ -1,25 +1,14 @@
 apiVersion: v1
 entries:
-  devpanel-static:
+  basic-hpa:
   - apiVersion: v2
-    appVersion: 0.0.3
-    created: "2020-11-30T15:45:20.1203725Z"
+    appVersion: 0.0.1
+    created: "2020-12-01T08:58:13.5650303Z"
     description: A Helm chart for Kubernetes
-    digest: d1eeaf074385b734baf6d46700f7ee9c985f0c4049e31b346a03cc1d4ca914e7
-    name: devpanel-static
+    digest: 920a6499a5c8df98dff3fc05ea44eadc8b2e2981834b6d52025e19b2300b1736
+    name: basic-hpa
     type: application
     urls:
-    - https://github.com/devpanel/charts/releases/download/devpanel-static-0.0.1/devpanel-static-0.0.1.tgz
-    version: 0.0.1
-  lemp:
-  - apiVersion: v2
-    appVersion: 0.1.0
-    created: "2020-11-30T15:45:20.4293294Z"
-    description: A Helm chart for Kubernetes
-    digest: cd126c0e4a166ce11170c171b855372ca03f690cd6e876f7ee3708c01e67f582
-    name: lemp
-    type: application
-    urls:
-    - https://github.com/devpanel/charts/releases/download/lemp-0.1.4/lemp-0.1.4.tgz
-    version: 0.1.4
-generated: "2020-11-30T15:45:19.4590399Z"
+    - https://github.com/devpanel/charts/releases/download/basic-hpa-0.1.1/basic-hpa-0.1.1.tgz
+    version: 0.1.1
+generated: "2020-12-01T08:58:12.9168054Z"

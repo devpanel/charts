@@ -5,7 +5,7 @@ This is the official Helm Charts repository for installing DevPanel on Kubernete
 ## Setup
 
 ```bash
-$ helm repo add devpanel https://charts.devpanel.com
+$ helm repo add devpanel https://devpanel.github.com/charts
 $ helm repo update
 
 # Helm 3
