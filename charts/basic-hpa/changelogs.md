@@ -1,0 +1,3 @@
+- v0.1.x:
+  - v0.1.0: 
+    - change image tag in Deployment template to use AppVerion
