@@ -3,12 +3,23 @@ entries:
   basic-hpa:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2020-12-01T08:58:13.5650303Z"
+    created: "2020-12-09T04:50:45.322685306Z"
     description: A Helm chart for Kubernetes
-    digest: 920a6499a5c8df98dff3fc05ea44eadc8b2e2981834b6d52025e19b2300b1736
+    digest: 3a26381f2b06cd9b6d1c0e3491c0b362d8d7290e6ba399a545041d91528e8dd1
     name: basic-hpa
     type: application
     urls:
-    - https://github.com/devpanel/charts/releases/download/basic-hpa-0.1.1/basic-hpa-0.1.1.tgz
-    version: 0.1.1
-generated: "2020-12-01T08:58:12.9168054Z"
+    - https://github.com/devpanel/charts/releases/download/basic-hpa-0.2.1/basic-hpa-0.2.1.tgz
+    version: 0.2.1
+  lemp:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2020-12-09T04:50:45.621840653Z"
+    description: A Helm chart for Kubernetes
+    digest: d34dd6cfe02aa3760794e510b0b3aa5b1a339630c6c57e0070e20204a2c15969
+    name: lemp
+    type: application
+    urls:
+    - https://github.com/devpanel/charts/releases/download/lemp-0.1.4/lemp-0.1.4.tgz
+    version: 0.1.4
+generated: "2020-12-09T04:50:44.657249755Z"
