@@ -6,6 +6,8 @@ metadata:
     {{- include "devpanel-static.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    {{- toYaml .Values.deploymentStrategy | nindent 4 }}
   selector:
     matchLabels:
       {{- include "devpanel-static.selectorLabels" . | nindent 6 }}
