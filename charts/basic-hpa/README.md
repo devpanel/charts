@@ -1,5 +1,7 @@
 # Changelogs
 - v0.2.x:
+  - v0.2.4
+    - Add `service.targetPort` to values file and deployment file
   - v0.2.3
     - Add `podAnnotations` to values file
   - v0.2.2
