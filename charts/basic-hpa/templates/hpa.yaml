@@ -2,12 +2,12 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "devpanel-ui-backend.fullname" . }}
+  name: {{ include "basic-hpa.fullname" . }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "devpanel-ui-backend.fullname" . }}
+    name: {{ include "basic-hpa.fullname" . }}
   minReplicas: {{ .Values.replicaCount }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
   metrics:

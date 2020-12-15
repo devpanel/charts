@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "devpanel-static.fullname" . }}
+  name: {{ include "basic-hpa.fullname" . }}
   labels:
-    {{- include "devpanel-static.labels" . | nindent 4 }}
+    {{- include "basic-hpa.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "devpanel-static.selectorLabels" . | nindent 4 }}
+    {{- include "basic-hpa.selectorLabels" . | nindent 4 }}
