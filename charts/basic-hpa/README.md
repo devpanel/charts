@@ -6,3 +6,4 @@
     - `deploymentStrategy` to values file and allowing user to config deployment startegy.
   - v0.2.2
     - Fixed bugs in hpa.yaml file
+    - Add README.md file and moving content into changelogs file into README.md file
