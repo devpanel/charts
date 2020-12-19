@@ -42,4 +42,14 @@ entries:
     urls:
     - https://github.com/devpanel/charts/releases/download/lemp-0.1.4/lemp-0.1.4.tgz
     version: 0.1.4
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2020-12-19T14:15:18.4294511Z"
+    description: A Helm chart for Kubernetes
+    digest: 4149a0b80fb262d232138e959aad73d619d63418eeef30178ff498e5bf157ed7
+    name: lemp
+    type: application
+    urls:
+    - https://github.com/devpanel/charts/releases/download/lemp-0.1.5/lemp-0.1.5.tgz
+    version: 0.1.5
 generated: "2020-12-09T04:50:44.657249755Z"
