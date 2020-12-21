@@ -1,24 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "devpanel-static.fullname" . }}
+  name: {{ include "basic-hpa.fullname" . }}
   labels:
-    {{- include "devpanel-static.labels" . | nindent 4 }}
+    {{- include "basic-hpa.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    {{- toYaml .Values.deploymentStrategy | nindent 4 }}
   selector:
     matchLabels:
-      {{- include "devpanel-static.selectorLabels" . | nindent 6 }}
+      {{- include "basic-hpa.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "devpanel-static.selectorLabels" . | nindent 8 }}
+        {{- include "basic-hpa.selectorLabels" . | nindent 8 }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "devpanel-static.serviceAccountName" . }}
+      serviceAccountName: {{ include "basic-hpa.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -33,7 +39,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           # livenessProbe:
           #   httpGet:

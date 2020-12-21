@@ -1,0 +1,14 @@
+# Changelogs
+- v0.2.x:
+  - v0.2.4
+    - Add `service.targetPort` to values file and deployment file
+  - v0.2.3
+    - Add `podAnnotations` to values file
+  - v0.2.2
+    - Fixed bugs in hpa.yaml file
+    - Add README.md file and moving content into changelogs file into README.md file
+  - v0.2.1:
+    - `deploymentStrategy` to values file and allowing user to config deployment startegy.
+- v0.1.x:
+  - v0.1.0: 
+    - change image tag in Deployment template to use AppVerion

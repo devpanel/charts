@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "devpanel-static.name" -}}
+{{- define "basic-hpa.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "devpanel-static.fullname" -}}
+{{- define "basic-hpa.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,18 +27,18 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "devpanel-static.chart" -}}
+{{- define "basic-hpa.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "devpanel-static.labels" -}}
-helm.sh/chart: {{ include "devpanel-static.chart" . }}
-{{ include "devpanel-static.selectorLabels" . }}
+{{- define "basic-hpa.labels" -}}
+helm.sh/chart: {{ include "basic-hpa.chart" . }}
+{{ include "basic-hpa.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "devpanel-static.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "devpanel-static.name" . }}
+{{- define "basic-hpa.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "basic-hpa.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "devpanel-static.serviceAccountName" -}}
+{{- define "basic-hpa.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "devpanel-static.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "basic-hpa.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
