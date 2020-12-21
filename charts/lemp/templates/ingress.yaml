@@ -63,7 +63,6 @@ metadata:
   labels:
     {{- include "app.labels" . | nindent 4 }}
   annotations:
-    konghq.com/override: "{{ $fullName }}"
     kubernetes.io/ingress.class: "kong"
 spec:
   {{- if .Values.codeserver.secretName }}
@@ -96,7 +95,6 @@ route:
   {{ if .Values.ingress.forceSSL }}
   protocols:
     - https
-  https_redirect_status_code: 302
   {{ else }}
   protocols:
     - http

@@ -77,7 +77,6 @@ metadata:
   labels:
     devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
   annotations:
-    konghq.com/override: "{{ include "app.fullname" . }}"
     kubernetes.io/ingress.class: "kong"
 spec:
   {{- if .Values.pma.secretName }}
