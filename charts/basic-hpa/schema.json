@@ -38,6 +38,13 @@
         }
       }
     },
+    "imagePullSecrets": {
+      "title": "Image Pull Secrets",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "deployment": {
       "type": "object",
       "title": "Deployment",
