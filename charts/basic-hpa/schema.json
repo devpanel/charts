@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "object",
+      "title": "Image",
+      "required": [ "repository", "tag", "pullPolicy" ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "title": "Name"
+        },
+        "tag": {
+          "type": "string",
+          "title": "Tag"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "title": "Pull Policy",
+          "enum": [ "IfNotPresent", "Always" ]
+        },
+        "env": {
+          "type": "array",
+          "title": "Environments",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Key"
+              },
+              "value": {
+                "type": "string",
+                "title": "Value"
+              }
+            }
+          }
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "title": "Deployment",
+      "required": [ "strategy" ],
+      "properties": {
+        "strategy": {
+          "title": "Strategy",
+          "type": "string",
+          "enum": [ "Recreate", "RollingUpdate" ]
+        }
+      }
+    },
+    "podAnnotations": {
+      "title": "Annotations",
+      "type":"object",
+      "propertyNames": {
+        "pattern": "^[a-z]{2}$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}
