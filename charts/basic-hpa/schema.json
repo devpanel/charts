@@ -1,23 +1,38 @@
 {
-  "type": "object",
-  "properties": {
-    "image": {
+  "definitions": {
+    "sidecar": {
       "type": "object",
-      "title": "Image",
-      "required": [ "repository", "tag", "pullPolicy" ],
       "properties": {
-        "repository": {
+        "image": {
+          "title": "Image Name & Tag",
           "type": "string",
-          "title": "Name"
+          "description": "Full name of container image including tag. Example: nginx:latest"
         },
-        "tag": {
-          "type": "string",
-          "title": "Tag"
-        },
-        "pullPolicy": {
+        "imagePullPolicy": {
           "type": "string",
           "title": "Pull Policy",
-          "enum": [ "IfNotPresent", "Always" ]
+          "default": "Always",
+          "enum": [
+            "Always",
+            "IfNotPresent"
+          ]
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "containerPort": {
+                "type": "integer",
+                "title": "Container Port"
+              }
+            }
+          }
         },
         "env": {
           "type": "array",
@@ -35,7 +50,116 @@
               }
             }
           }
+        },
+        "volumeMounts": {
+          "type": "array",
+          "title": "Volume Mounths",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "mountPath": {
+                "title": "Mount Path",
+                "type": "string"
+              }
+            }
+          }
         }
+      }
+    },
+    "container": {
+      "type": "object",
+      "required": [
+        "repository",
+        "tag",
+        "imagePullPolicy"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "title": "Repository"
+        },
+        "tag": {
+          "type": "string",
+          "title": "Tag"
+        },
+        "imagePullPolicy": {
+          "type": "string",
+          "title": "Pull Policy",
+          "default": "Always",
+          "enum": [
+            "Always",
+            "IfNotPresent"
+          ]
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "containerPort": {
+                "type": "integer",
+                "title": "Container Port"
+              }
+            }
+          }
+        },
+        "env": {
+          "type": "array",
+          "title": "Environments",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Key"
+              },
+              "value": {
+                "type": "string",
+                "title": "Value"
+              }
+            }
+          }
+        },
+        "volumeMounts": {
+          "type": "array",
+          "title": "Volumes Mounths",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "mountPath": {
+                "title": "Mount Path",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "image": {
+      "title": "Main Image",
+      "$ref": "#/definitions/container"
+    },
+    "sidecars": {
+      "type": "array",
+      "title": "Sidecars",
+      "items": {
+        "$ref": "#/definitions/sidecar"
       }
     },
     "imagePullSecrets": {
@@ -48,23 +172,50 @@
     "deployment": {
       "type": "object",
       "title": "Deployment",
-      "required": [ "strategy" ],
+      "required": [
+        "strategy"
+      ],
       "properties": {
         "strategy": {
           "title": "Strategy",
           "type": "string",
-          "enum": [ "Recreate", "RollingUpdate" ]
+          "default": "RollingUpdate",
+          "enum": [
+            "RollingUpdate",
+            "Recreate"
+          ]
         }
       }
     },
     "podAnnotations": {
       "title": "Annotations",
-      "type":"object",
+      "type": "object",
       "propertyNames": {
         "pattern": "^[a-z]{2}$"
       },
       "additionalProperties": {
         "type": "string"
+      }
+    },
+    "volumes": {
+      "title": "Persistant Volume",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "storageClass": {
+            "title": "Storage Class Name",
+            "type": "string"
+          },
+          "capability": {
+            "title": "Capability",
+            "type": "string"
+          }
+        }
       }
     }
   }

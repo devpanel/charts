@@ -1,4 +1,10 @@
 # Changelogs
+- v0.3.x:
+  - v0.3.0
+    - Add `schema.json` to support jsonform
+  - v0.3.1
+    - Update `schema.json` to support persistant volumes and sidecars
+    - Rewrite template files
 - v0.2.x:
   - v0.2.4
     - Add `service.targetPort` to values file and deployment file
