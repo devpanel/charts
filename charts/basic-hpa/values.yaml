@@ -7,8 +7,27 @@ replicaCount: 1
 image:
   repository: nginx
   tag: latest
-  pullPolicy: IfNotPresent
+  imagePullPolicy: IfNotPresent
   env: []
+  ports: []
+  volumeMounts: []
+    # - name: app-root
+    #   mountPath: /var/www/html
+
+sidecars: []
+  # - repository: nginx
+  #   tag: latest
+  #   imagePullPolicy: IfNotPresent
+  #   env: []
+  #   ports: []
+  #   volumeMounts: []
+      # - name: app-root
+      #   mountPath: /var/www/html
+    
+volumes: []
+  # - name: app-root
+  #   storageClass: ebs-gp2
+  #   capability: 10Gi
 
 imagePullSecrets: []
 nameOverride: ""

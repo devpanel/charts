@@ -1,0 +1,20 @@
+{{- if .Values.volumes }}
+{{- range .Values.volumes }}
+---
+{{- if eq .storageClass "ebs-gp2" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "basic-hpa.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .capability }}
+  storageClassName: {{ .storageClass }}
+{{- end }}
+{{- end }}
+{{- end -}}
