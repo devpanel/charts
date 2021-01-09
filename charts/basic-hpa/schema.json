@@ -2,7 +2,15 @@
   "definitions": {
     "sidecar": {
       "type": "object",
+      "required": [
+        "name",
+        "image"
+      ],
       "properties": {
+        "name": {
+          "title": "Container Name",
+          "type": "string"
+        },
         "image": {
           "title": "Image Name & Tag",
           "type": "string",
@@ -93,6 +101,14 @@
         "tag": {
           "type": "string",
           "title": "Tag"
+        },
+        "command": {
+          "type": "array",
+          "title": "Command",
+          "items": {
+            "type": "string"
+          },
+          "default": []
         },
         "imagePullPolicy": {
           "type": "string",

@@ -13,6 +13,7 @@ image:
   volumeMounts: []
     # - name: app-root
     #   mountPath: /var/www/html
+  command: []
 
 sidecars: []
   # - repository: nginx
