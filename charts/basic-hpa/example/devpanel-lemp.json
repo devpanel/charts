@@ -30,8 +30,26 @@
     "repository": "devpanel/php-fpm",
     "tag": "7.4"
   },
+  "initContainers": [
+    {
+      "command": [
+        "sh",
+        "-c",
+        "cp -R -p /code /var/www/html/web"
+      ],
+      "imagePullPolicy": "Always",
+      "volumeMounts": [
+        {
+          "name": "app-root",
+          "mountPath": "/var/www/html"
+        }
+      ],
+      "image": "registry.gitlab.com/vothanhbinh.lt/voa-testing:latest"
+    }
+  ],
   "sidecars": [
     {
+      "command": [],
       "imagePullPolicy": "Always",
       "ports": [
         {
