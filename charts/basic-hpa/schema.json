@@ -8,6 +8,14 @@
           "type": "string",
           "description": "Full name of container image including tag. Example: nginx:latest"
         },
+        "command": {
+          "type": "array",
+          "title": "Command",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
         "imagePullPolicy": {
           "type": "string",
           "title": "Pull Policy",
@@ -154,6 +162,13 @@
     "image": {
       "title": "Main Image",
       "$ref": "#/definitions/container"
+    },
+    "initContainers": {
+      "type": "array",
+      "title": "Init Containers",
+      "items": {
+        "$ref": "#/definitions/sidecar"
+      }
     },
     "sidecars": {
       "type": "array",
