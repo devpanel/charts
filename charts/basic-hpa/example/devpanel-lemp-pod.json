@@ -1,0 +1,90 @@
+{
+  "image": {
+    "command": [],
+    "imagePullPolicy": "Always",
+    "ports": [
+      {
+        "name": "codeserver",
+        "containerPort": 8080
+      },
+      {
+        "name": "fastcgi",
+        "containerPort": 9000
+      }
+    ],
+    "env": [
+      {
+        "name": "APP_ROOT",
+        "value": "/var/www/html"
+      },
+      {
+        "name": "WEB_ROOT",
+        "value": "/var/www/html/docroot"
+      }
+    ],
+    "volumeMounts": [
+      {
+        "name": "app-root",
+        "mountPath": "/var/www/html"
+      }
+    ],
+    "repository": "devpanel/php-fpm",
+    "tag": "7.4"
+  },
+  "initContainers": [
+    {
+      "command": [
+        "sh",
+        "-c",
+        "cp -R -p /code /var/www/html/web"
+      ],
+      "imagePullPolicy": "Always",
+      "volumeMounts": [
+        {
+          "name": "app-root",
+          "mountPath": "/var/www/html"
+        }
+      ],
+      "image": "registry.gitlab.com/vothanhbinh.lt/voa-testing:latest",
+      "name": "nginx"
+    }
+  ],
+  "sidecars": [
+    {
+      "command": [],
+      "imagePullPolicy": "Always",
+      "ports": [
+        {
+          "name": "http",
+          "containerPort": 80
+        }
+      ],
+      "env": [
+        {
+          "name": "NGINX_SERVER_ROOT",
+          "value": "/var/www/html/docroot"
+        }
+      ],
+      "volumeMounts": [
+        {
+          "name": "app-root",
+          "mountPath": "/var/www/html"
+        }
+      ],
+      "image": "wodby/nginx:latest",
+      "name": "nginx"
+    }
+  ],
+  "deployment": {
+    "strategy": "RollingUpdate"
+  },
+  "podAnnotations": {},
+  "volumes": [
+    {
+      "storageClass": "emptydir",
+      "capability": "10Gi",
+      "sizeLimit": "10Gi",
+      "name": "app-root"
+    }
+  ]
+}
