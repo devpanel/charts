@@ -197,7 +197,13 @@
       "title": "Image Pull Secrets",
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Secret Name",
+            "type": "string"
+          }
+        }
       }
     },
     "deployment": {
