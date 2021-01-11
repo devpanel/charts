@@ -69,9 +69,16 @@ spec:
       {{ with .Values.volumes }}
       volumes:
       {{ range . }}
+      {{ if eq .storageClass "ebs-gp2" }}
       - name: {{ .name }}
         persistentVolumeClaim:
           claimName: {{ .name }}
+      {{ end }}
+      {{ if eq .storageClass "emptydir" }}
+      - name: {{ .name }}
+        emptyDir:
+          sizeLimit: {{ .sizeLimit }}
+      {{ end }}
       {{ end }}
       {{ end }}
     {{- with .Values.nodeSelector }}

@@ -229,24 +229,51 @@
       }
     },
     "volumes": {
-      "title": "Persistant Volume",
+      "title": "Volumes",
       "type": "array",
       "items": {
         "type": "object",
-        "properties": {
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "storageClass": {
-            "title": "Storage Class Name",
-            "type": "string"
-          },
-          "capability": {
-            "title": "Capability",
-            "type": "string"
+        "anyOf": [
+          {
+            "title": "AWS EBS GP2",
+            "required": [ "name", "capability" ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "storageClass": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "ebs-gp2"
+              },
+              "capability": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          }, {
+            "title": "EmptyDir",
+            "required": [ "name", "sizeLimit" ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "storageClass": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "emptydir"
+              },
+              "sizeLimit": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
           }
-        }
+        ]
       }
     }
   }

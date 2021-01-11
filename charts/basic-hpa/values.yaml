@@ -24,7 +24,15 @@ sidecars: []
   #   volumeMounts: []
       # - name: app-root
       #   mountPath: /var/www/html
-    
+initContainers: []
+  # - repository: nginx
+  #   tag: latest
+  #   imagePullPolicy: IfNotPresent
+  #   env: []
+  #   ports: []
+  #   volumeMounts: []
+      # - name: app-root
+      #   mountPath: /var/www/html
 volumes: []
   # - name: app-root
   #   storageClass: ebs-gp2
