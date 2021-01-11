@@ -39,6 +39,7 @@ volumes: []
   #   capability: 10Gi
 
 imagePullSecrets: []
+  # - name: example
 nameOverride: ""
 fullnameOverride: ""
 

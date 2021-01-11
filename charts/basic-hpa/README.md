@@ -5,6 +5,10 @@
   - v0.3.1
     - Update `schema.json` to support persistant volumes and sidecars
     - Rewrite template files
+  - v0.3.4
+    - Update `schema.json` to separate volume types to support aws ebs and emptydir
+  - v0.3.5
+    - Update `imagePullSecrets` in `schema.json`
 - v0.2.x:
   - v0.2.4
     - Add `service.targetPort` to values file and deployment file
