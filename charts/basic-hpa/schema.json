@@ -1,5 +1,31 @@
 {
   "definitions": {
+    "hpa": {
+      "type": "object",
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable",
+          "default": false
+        },
+        "maxReplicas": {
+          "type": "number",
+          "title": "Maximum Replicas",
+          "default": 10
+        },
+        "cpu": {
+          "type": "number",
+          "title": "CPU Average",
+          "description": "Example: 60"
+        },
+        "memory": {
+          "type": "string",
+          "title": "Memory Average",
+          "description": "Example: 100Mi, 1Gi"
+        }
+      }
+    },
     "sidecar": {
       "type": "object",
       "required": [
@@ -69,7 +95,7 @@
         },
         "volumeMounts": {
           "type": "array",
-          "title": "Volume Mounths",
+          "title": "Volume Mounts",
           "items": {
             "type": "object",
             "properties": {
@@ -282,6 +308,10 @@
           }
         ]
       }
+    },
+    "hpa": {
+      "title": "HPA (Horizontal Pod Autoscaler)",
+      "$ref": "#/definitions/hpa"
     }
   }
 }
