@@ -1,0 +1,28 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "basic-cronjob.fullname" . }}
+spec:
+  schedule: "{{ .Values.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+        {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+          containers:
+          - name: {{ .Chart.Name }}
+            image: {{ .Values.image.image }}
+            imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+            {{- with .Values.image.command }}
+            command:
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.image.env }}
+            env:
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          restartPolicy: {{ .Values.image.restartPolicy }}

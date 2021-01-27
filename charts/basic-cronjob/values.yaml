@@ -1,0 +1,22 @@
+# Default values for basic-cronjob.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+schedule: "* * * * *"
+
+failedJobsHistoryLimit: 1
+successfulJobsHistoryLimit: 3
+concurrencyPolicy: Allow
+
+image:
+  command: []
+  imagePullPolicy: Always
+  restartPolicy: OnFailure
+  name: nginx:latest
+  env: []
+
+imagePullSecrets: []
+  # - name: example
