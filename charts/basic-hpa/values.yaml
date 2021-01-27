@@ -9,6 +9,7 @@ image:
   tag: latest
   imagePullPolicy: IfNotPresent
   env: []
+  secretENV: []
   ports: []
   volumeMounts: []
     # - name: app-root
