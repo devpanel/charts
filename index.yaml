@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  basic-cronjob:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2021-01-27T09:37:54.9290705Z"
+    description: A Helm chart for Kubernetes
+    digest: 3d03dc9f2603d0c70a3c45cddbe8a908dd85e2852d0aff9602c82e394e4bafcb
+    name: basic-cronjob
+    type: application
+    urls:
+    - https://github.com/devpanel/charts/releases/download/basic-cronjob-0.0.1/basic-cronjob-0.0.1.tgz
+    version: 0.0.1
   basic-hpa:
   - apiVersion: v2
     appVersion: 0.0.1
