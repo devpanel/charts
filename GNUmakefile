@@ -4,6 +4,8 @@ index:
 	"cr index -p .deploy -c https://github.com/devpanel/charts -o devpanel --git-repo charts -i ./index.yaml"
 package-basic-hpa:
 	helm package charts/basic-hpa --destination .deploy
+package-basic-cronjob:
+	helm package charts/basic-cronjob --destination .deploy
 package-lemp:
 	helm package charts/lemp --destination .deploy
 upload:
