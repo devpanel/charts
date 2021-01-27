@@ -1,0 +1,110 @@
+{
+  "definitions": {
+    "container": {
+      "type": "object",
+      "required": [
+        "image",
+        "imagePullPolicy"
+      ],
+      "properties": {
+        "image": {
+          "type": "string",
+          "title": "Name",
+          "description": "Example: nginx:latest"
+        },
+        "command": {
+          "type": "array",
+          "title": "Command",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "imagePullPolicy": {
+          "type": "string",
+          "title": "Pull Policy",
+          "default": "Always",
+          "enum": [
+            "Always",
+            "IfNotPresent"
+          ]
+        },
+        "env": {
+          "type": "array",
+          "title": "Environments",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Key"
+              },
+              "value": {
+                "type": "string",
+                "title": "Value"
+              }
+            }
+          }
+        },
+        "restartPolicy": {
+          "type": "string",
+          "title": "Restart Policy",
+          "enum": [
+            "Always",
+            "OnFailure",
+            "Never"
+          ],
+          "default": "Always"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": [ "schedule" ],
+  "properties": {
+    "schedule": {
+      "type": "string",
+      "title": "Job Schedule",
+      "default": "* * * * *",
+      "description": "Example: * * * * * "
+    },
+    "image": {
+      "title": "Image",
+      "$ref": "#/definitions/container"
+    },
+    "imagePullSecrets": {
+      "title": "Image Pull Secrets",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "title": "Secret Name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "failedJobsHistoryLimit": {
+      "title": "Failed Job History Limit",
+      "type": "number",
+      "default": 1
+    },
+    "successfulJobsHistoryLimit": {
+      "title": "Successful Job History Limit",
+      "type": "number",
+      "default": 3
+    },
+    "concurrencyPolicy": {
+      "type": "string",
+      "title": "Cocurrentcy Policy",
+      "enum": [
+        "Allow",
+        "Forbid",
+        "Replace"
+      ],
+      "default": "Allow"
+    }
+  }
+}
