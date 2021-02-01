@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ include "lemp.fullname" . }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
 data:
   magento2.conf.tmpl: |
     {{`

@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ include "lemp.fullname" . }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
 spec:
   strategy:
     type: {{ .Values.strategy }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "app.selectorLabels" . | nindent 6 }}
+      {{- include "lemp.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "app.selectorLabels" . | nindent 8 }}
+        {{- include "lemp.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      serviceAccountName: {{ include "lemp.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -45,22 +45,22 @@ spec:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_HOST"
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_NAME"
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_USER"
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_PASSWORD"
             {{ end }}
           ports:
@@ -101,11 +101,11 @@ spec:
       volumes:
         - name: app-volume
           persistentVolumeClaim:
-            claimName: "{{ include "app.fullname" . }}"
+            claimName: "{{ include "lemp.fullname" . }}"
         {{ if eq .Values.application.type "magento2" }}
         - name: custom-conf-tmpl
           configMap:
-            name: {{ include "app.fullname" . }}
+            name: {{ include "lemp.fullname" . }}
         {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

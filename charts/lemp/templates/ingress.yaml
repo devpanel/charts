@@ -1,4 +1,4 @@
-{{- $fullName := include "app.fullname" . -}}
+{{- $fullName := include "lemp.fullname" . -}}
 {{- if .Values.ingress.enabled -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -10,11 +10,11 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
   annotations:
     konghq.com/override: "{{ $fullName }}"
     kubernetes.io/ingress.class: "kong"
-    {{- include "app.ingress.annotations" . | nindent 4 }}
+    {{- include "lemp.ingress.annotations" . | nindent 4 }}
 spec:
 {{- if .Values.ingress.tls }}
   tls:
@@ -61,7 +61,7 @@ kind: Ingress
 metadata:
   name: "{{ $fullName }}-codeserver"
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
   annotations:
     kubernetes.io/ingress.class: "kong"
 spec:
@@ -90,7 +90,7 @@ kind: KongIngress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
 route:
   {{ if .Values.ingress.forceSSL }}
   protocols:

@@ -1,5 +1,5 @@
 {{- if .Values.pma.isEnabled  -}}
-{{ $pmaFullName :=  include "app.fullname" . }}
+{{ $pmaFullName :=  include "lemp.fullname" . }}
 {{ $pmaFullName := printf "%s-%s" $pmaFullName "pma"  }}
 apiVersion: apps/v1
 kind: Deployment
@@ -28,22 +28,22 @@ spec:
             - name: PMA_HOST
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_HOST"
             - name: PMA_PORT
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_PORT"
             - name: PMA_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_USER"
             - name: PMA_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.fullname" . }}
+                  name: {{ include "lemp.fullname" . }}
                   key: "DB_PASSWORD"
           ports:
             - name: http

@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "app.name" -}}
+{{- define "lemp.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "app.fullname" -}}
+{{- define "lemp.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,44 +27,44 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "app.chart" -}}
+{{- define "lemp.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "app.labels" -}}
-helm.sh/chart: {{ include "app.chart" . }}
-{{ include "app.selectorLabels" . }}
+{{- define "lemp.labels" -}}
+helm.sh/chart: {{ include "lemp.chart" . }}
+{{ include "lemp.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+lemp.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+lemp.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{/*
 Selector labels
 */}}
-{{- define "app.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "app.name" . }}
+{{- define "lemp.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "lemp.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "app.serviceAccountName" -}}
+{{- define "lemp.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "app.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "lemp.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
-{{- define "app.ingress.annotations" -}}
+{{- define "lemp.ingress.annotations" -}}
 kubernetes.io/tls-acme: "false"
 {{- if .Values.security.basicAuthentication.enabled }}
-konghq.com/plugins: {{ include "app.fullname" . }}
+konghq.com/plugins: {{ include "lemp.fullname" . }}
 {{- end }}
 {{- end -}}
