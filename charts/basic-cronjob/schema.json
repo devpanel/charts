@@ -50,11 +50,10 @@
           "type": "string",
           "title": "Restart Policy",
           "enum": [
-            "Always",
             "OnFailure",
             "Never"
           ],
-          "default": "Always"
+          "default": "OnFailure"
         }
       }
     }
@@ -66,7 +65,7 @@
       "type": "string",
       "title": "Job Schedule",
       "default": "* * * * *",
-      "description": "Example: * * * * * "
+      "description": "Example: * * * * *. Read more: https://crontab.guru/"
     },
     "image": {
       "title": "Image",
