@@ -1,50 +1,30 @@
 {{- if .Values.pma.isEnabled  -}}
-{{ $pmaFullName :=  include "lemp.fullname" . }}
+{{ $pmaFullName :=  include "basic-lemp.fullname" . }}
 {{ $pmaFullName := printf "%s-%s" $pmaFullName "pma"  }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ $pmaFullName }}"
   labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
     devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
 spec:
   replicas: 1
   selector:
     matchLabels:
+      {{- include "basic-lemp.selectorLabels" . | nindent 6 }}
       devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
   template:
     metadata:
       labels:
+        {{- include "basic-lemp.selectorLabels" . | nindent 8 }}
         devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
     spec:
       containers:
         - name: phpmyadmin
           image: "phpmyadmin/phpmyadmin"
           env:
-            - name: PMA_VERBOSE
-              value: "{{ .Values.pma.pmgVerbose }}"
-            - name: UPLOAD_LIMIT
-              value: "{{ .Values.pma.pmaUploadLimit }}"
-            - name: PMA_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_HOST"
-            - name: PMA_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_PORT"
-            - name: PMA_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_USER"
-            - name: PMA_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_PASSWORD"
+            {{- toYaml .Values.pma.env | nindent 12 }}
           ports:
             - name: http
               containerPort: 80
@@ -57,6 +37,7 @@ kind: Service
 metadata:
   name: "{{ $pmaFullName }}"
   labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
     devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
   annotations:
     konghq.com/plugins: "devpanel-kong-jwt"
@@ -75,9 +56,8 @@ kind: Ingress
 metadata:
   name: "{{ $pmaFullName }}"
   labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
     devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
-  annotations:
-    kubernetes.io/ingress.class: "kong"
 spec:
   {{- if .Values.pma.secretName }}
   tls:
@@ -93,8 +73,4 @@ spec:
             backend: 
               serviceName: "{{ $pmaFullName }}"
               servicePort: http
-          - path: /devpanel/verify
-            backend:
-              serviceName: devpanel-authenticator
-              servicePort: 8080
 {{- end -}}

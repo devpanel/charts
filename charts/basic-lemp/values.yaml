@@ -1,0 +1,33 @@
+# Default values for basic-hpa.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+basic-hpa: {}
+  # Basic HPA valus. Read here https://github.com/devpanel/charts/tree/main/charts/basic-hpa
+
+mysql:
+  enabled: true
+
+codeserver:
+  isEnabled: false
+  hostname: ""
+  secretName: ""
+  resources: {}
+
+pma: []
+  # isEnabled: false
+  # hostname: ""
+  # secretName: ""
+  # resources: {}
+  # env: []
+  #   - name: "PMA_VERBOSE"
+  #     value: "example"
+  #   - name: "UPLOAD_LIMIT"
+  #     value: "500M"
+  #   - name: "PMA_HOST"
+  #     value: "localhost"
+  #   - name: "PMA_PORT"
+  #     value: "3306"
+  #   - name: "PMA_USER"
+  #     value: "root"
+  #   - name: "PMA_PASSWORD"
+  #     value: ""

@@ -4,16 +4,16 @@ kind: KongConsumer
 metadata:
   annotations:
     kubernetes.io/ingress.class: "kong"
-  name: "{{ include "app.fullname" . }}-kong-consumer"
+  name: "{{ include "lemp.fullname" . }}-kong-consumer"
   labels:
-    {{- include "app.labels" . | nindent 4 }}
-username: "{{ include "app.fullname" . }}-kong-consumer"
+    {{- include "lemp.labels" . | nindent 4 }}
+username: "{{ include "lemp.fullname" . }}-kong-consumer"
 credentials:
   {{ if .Values.security.basicAuthentication.enabled }}
-  - "{{ include "app.fullname" . }}-kong-basic-auth"
+  - "{{ include "lemp.fullname" . }}-kong-basic-auth"
   {{ end }}
   {{ if .Values.security.jwt.enabled }}
-  - "{{ include "app.fullname" . }}-kong-jwt"
+  - "{{ include "lemp.fullname" . }}-kong-jwt"
   {{ end }}
 {{- end }}
 
@@ -22,9 +22,9 @@ credentials:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: "{{ include "app.fullname" . }}-kong-basic-auth"
+  name: "{{ include "lemp.fullname" . }}-kong-basic-auth"
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
 data:
   kongCredType: {{ "basic-auth" | b64enc | quote }}
   username: {{ .Values.security.basicAuthentication.username | b64enc | quote }}
@@ -37,9 +37,9 @@ type: Opaque
 apiVersion: v1
 kind: Secret
 metadata:
-  name: "{{ include "app.fullname" . }}-kong-jwt"
+  name: "{{ include "lemp.fullname" . }}-kong-jwt"
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "lemp.labels" . | nindent 4 }}
 data:
   kongCredType: {{ "jwt" | b64enc | quote }}
   algorithm: {{ "HS256" | b64enc | quote }}

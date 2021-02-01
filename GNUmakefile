@@ -6,6 +6,8 @@ package-basic-hpa:
 	helm package charts/basic-hpa --destination .deploy
 package-basic-cronjob:
 	helm package charts/basic-cronjob --destination .deploy
+package-basic-lemp:
+	helm package charts/basic-lemp --destination .deploy
 package-lemp:
 	helm package charts/lemp --destination .deploy
 upload:
