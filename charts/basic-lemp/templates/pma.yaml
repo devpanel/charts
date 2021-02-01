@@ -1,0 +1,76 @@
+{{- if .Values.pma.isEnabled  -}}
+{{ $pmaFullName :=  include "basic-lemp.fullname" . }}
+{{ $pmaFullName := printf "%s-%s" $pmaFullName "pma"  }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ $pmaFullName }}"
+  labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
+    devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "basic-lemp.selectorLabels" . | nindent 6 }}
+      devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
+  template:
+    metadata:
+      labels:
+        {{- include "basic-lemp.selectorLabels" . | nindent 8 }}
+        devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
+    spec:
+      containers:
+        - name: phpmyadmin
+          image: "phpmyadmin/phpmyadmin"
+          env:
+            {{- toYaml .Values.pma.env | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.pma.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $pmaFullName }}"
+  labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
+    devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
+  annotations:
+    konghq.com/plugins: "devpanel-kong-jwt"
+spec:
+  type: "ClusterIP"
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ $pmaFullName }}"
+  labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
+    devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
+spec:
+  {{- if .Values.pma.secretName }}
+  tls:
+    - secretName: {{ .Values.pma.secretName | quote }}
+      hosts:
+        - {{ .Values.pma.hostname | quote }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.pma.hostname | quote }}
+      http:
+        paths:
+          - path: "/"
+            backend: 
+              serviceName: "{{ $pmaFullName }}"
+              servicePort: http
+{{- end -}}

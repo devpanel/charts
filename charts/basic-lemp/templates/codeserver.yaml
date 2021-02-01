@@ -1,0 +1,45 @@
+{{- if .Values.codeserver.isEnabled }}
+{{ $codeSVFullName :=  include "basic-lemp.fullname" . }}
+{{ $codeSVFullName := printf "%s-%s" $codeSVFullName "codeserver"  }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $codeSVFullName }}"
+  labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
+  # annotations:
+  #   konghq.com/plugins: "devpanel-kong-jwt"
+spec:
+  type: "ClusterIP"
+  ports:
+    - name: codeserver
+      port: 8080
+      targetPort: codeserver
+      protocol: TCP
+  selector:
+    {{- include "basic-lemp.selectorLabels" . | nindent 4 }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ $codeSVFullName }}"
+  labels:
+    {{- include "basic-lemp.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+spec:
+  {{- if .Values.codeserver.secretName }}
+  tls:
+    - secretName: {{ .Values.codeserver.secretName | quote }}
+      hosts:
+        - {{ .Values.codeserver.hostname | quote }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.codeserver.hostname | quote }}
+      http:
+        paths:
+          - path: "/"
+            backend: 
+              serviceName: "{{ $codeSVFullName }}"
+              servicePort: codeserver
+{{- end }}
