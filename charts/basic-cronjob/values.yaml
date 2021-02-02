@@ -17,6 +17,7 @@ image:
   restartPolicy: OnFailure
   name: nginx:latest
   env: []
+  secretENV: []
 
 imagePullSecrets: []
   # - name: example
