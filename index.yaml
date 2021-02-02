@@ -18,9 +18,9 @@ entries:
   basic-cronjob:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2021-02-01T16:37:52.3182916Z"
+    created: "2021-02-02T11:17:52.6726725Z"
     description: A Helm chart for Kubernetes
-    digest: be583cdc89e8df2428f18c9f473fa7ffbefeaadc8282a7d2d5caa7a485b56c33
+    digest: ebca620be220e18e69a7dbf0af53f440bc0c388178329264f3b71da2b6744550
     name: basic-cronjob
     type: application
     urls:
