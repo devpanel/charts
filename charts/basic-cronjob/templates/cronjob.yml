@@ -21,8 +21,13 @@ spec:
             command:
               {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- with .Values.image.env }}
+            {{ if or .Values.image.env .Values.image.secretENV }}
             env:
-              {{- toYaml . | nindent 12 }}
+            {{- with .Values.image.secretENV }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
+            {{- with .Values.image.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{ end }}
           restartPolicy: {{ .Values.image.restartPolicy }}
