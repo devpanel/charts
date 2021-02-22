@@ -31,9 +31,9 @@ spec:
           image: "{{ .Values.images.php.name }}:{{ .Values.images.php.version }}"
           imagePullPolicy: {{ .Values.images.php.pullPolicy }}
           env:
-            {{ if .Values.application.hostname }}
+            {{ if .Values.application.baseURL }}
             - name: DEVPANEL_HOSTNAME
-              value: {{ .Values.application.hostname }}
+              value: {{ .Values.application.baseURL }}
             {{ end }}
             {{- if .Values.images.php.env }}
             {{- toYaml .Values.images.php.env | nindent 12 }}
