@@ -25,10 +25,10 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
-  {{- with .Values.application.hostNameTLSSecret }}
+  {{- if .Values.application.hostNameTLSSecret }}
     - hosts:
-      - {{ .Values.application.hostname }}
-      secretName: {{ . }}
+      - "{{ .Values.application.hostname }}"
+      secretName: {{ .Values.application.hostNameTLSSecret }}
   {{- end }}
 {{- end }}
   rules:
@@ -40,7 +40,7 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
-  {{- end}}
+  {{- end }}
   {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
