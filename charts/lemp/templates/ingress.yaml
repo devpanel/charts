@@ -95,6 +95,7 @@ route:
   {{ if .Values.ingress.forceSSL }}
   protocols:
     - https
+  https_redirect_status_code: 302
   {{ else }}
   protocols:
     - http
