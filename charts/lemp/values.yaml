@@ -52,6 +52,13 @@ application:
   hostNameTLSSecret: ""
   hpa:
     enabled: false
+  externalDisks: []
+  # - enabled: true
+  #   name: "static-folder"
+  #   type: "aws_efs"
+  #   volumeHandler: "fs-abc12345"
+  #   storage: 50Gi
+  #   mountPath: "/var/www/static"
 
 codeserver:
   isEnabled: false

@@ -45,3 +45,40 @@ spec:
       storage: {{ .Values.application.storage }}
   storageClassName: {{ .Values.application.storageClass }}
 {{- end }}
+
+{{- range .Values.application.externalDisks }}
+{{- if .enabled }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ include "lemp.fullname" $ }}-{{ .name }}"
+  labels:
+    {{- include "lemp.labels" $ | nindent 4 }}
+spec:
+  capacity:
+    storage: {{ .storage }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: aws-efs
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: "{{ .volumeHandler }}"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ include "lemp.fullname" $ }}-{{ .name }}"
+  labels:
+    {{- include "lemp.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: aws-efs
+  resources:
+    requests:
+      storage: {{ .storage }}
+{{- end }}
+{{- end }}

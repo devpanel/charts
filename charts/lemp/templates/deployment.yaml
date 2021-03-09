@@ -79,6 +79,12 @@ spec:
           volumeMounts:
             - name: app-volume
               mountPath: "{{ .Values.application.appRoot }}"
+            {{ range .Values.application.externalDisks }}
+            {{ if .enabled }}
+            - name: "{{ include "lemp.fullname" $ }}-{{ .name }}"
+              mountPath: {{ .mountPath }}
+            {{ end }}
+            {{ end }}
         {{ end }}
         {{ if .Values.images.nginx.name }}
         - name: nginx
@@ -101,6 +107,12 @@ spec:
               mountPath: /etc/gotpl/presets/magento2.conf.tmpl
               subPath: magento2.conf.tmpl
             {{ end }}
+            {{ range .Values.application.externalDisks }}
+            {{ if .enabled }}
+            - name: "{{ include "lemp.fullname" $ }}-{{ .name }}"
+              mountPath: {{ .mountPath }}
+            {{ end }}
+            {{ end }}
         {{ end }}
       volumes:
         - name: app-volume
@@ -110,6 +122,13 @@ spec:
         - name: custom-conf-tmpl
           configMap:
             name: {{ include "lemp.fullname" . }}
+        {{ end }}
+        {{ range .Values.application.externalDisks }}
+        {{ if .enabled }}
+        - name: "{{ include "lemp.fullname" $ }}-{{ .name }}"
+          persistentVolumeClaim:
+            claimName: "{{ include "lemp.fullname" $ }}-{{ .name }}"
+        {{ end }}
         {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
