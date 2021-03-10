@@ -107,7 +107,8 @@ service:
 
 ingress:
   enabled: false
-  forceSSL: true
+  forceSSL: false
+  enabledLetsEncrypt: false
   annotations: {}
   hosts:
     - host: ""

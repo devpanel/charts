@@ -63,7 +63,13 @@ Create the name of the service account to use
 {{- end -}}
 
 {{- define "lemp.ingress.annotations" -}}
-kubernetes.io/tls-acme: "false"
+{{- with .Values.ingress.annotations }}
+{{- toYaml . }} 
+{{- end }}
+{{- if .Values.ingress.enabledLetsEncrypt}}
+kubernetes.io/tls-acme: "true"
+cert-manager.io/cluster-issuer: letsencrypt-prod
+{{- end }}
 {{- if .Values.security.basicAuthentication.enabled }}
 konghq.com/plugins: {{ include "lemp.fullname" . }}
 {{- end }}
