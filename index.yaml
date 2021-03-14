@@ -29,6 +29,16 @@ entries:
   basic-hpa:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2021-03-14T14:01:14.8692143Z"
+    description: A Helm chart for Kubernetes
+    digest: c7ad42828b370f126f48b93465338306fd35006b60fc34e52f5785d2ff8b771d
+    name: basic-hpa
+    type: application
+    urls:
+    - https://github.com/devpanel/charts/releases/download/basic-hpa-0.3.7/basic-hpa-0.3.7.tgz
+    version: 0.3.7
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2021-01-22T09:13:40.9418498Z"
     description: A Helm chart for Kubernetes
     digest: 8416d5a6d95e75fe61e985cdb3f2cd72ad25988da8b4000f81210bbc9969ea64
