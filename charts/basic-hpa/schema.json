@@ -93,6 +93,11 @@
             }
           }
         },
+        "resources": {
+          "title": "Resources",
+          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
+          "$ref": "#/definitions/resources"
+        },
         "volumeMounts": {
           "type": "array",
           "title": "Volume Mounts",
@@ -179,6 +184,11 @@
             }
           }
         },
+        "resources": {
+          "title": "Resources",
+          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
+          "$ref": "#/definitions/resources"
+        },
         "volumeMounts": {
           "type": "array",
           "title": "Volumes Mounths",
@@ -197,6 +207,47 @@
           }
         }
       }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "title": "Requests",
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "title": "CPU",
+              "type": "string",
+              "default": "100m",
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
+            },
+            "memory": {
+              "title": "Memory",
+              "type": "string",
+              "default": "256Mi",
+              "description": "You can express memory as a plain integer or as a fixed-point number using one of these suffixes: E, P, T, G, M, K. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki."
+            }
+          }
+        },
+        "limits": {
+          "title": "Limits",
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "title": "CPU",
+              "type": "string",
+              "default": "500m",
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
+            },
+            "memory": {
+              "title": "Memory",
+              "type": "string",
+              "default": "1Gi",
+              "description": "You can express memory as a plain integer or as a fixed-point number using one of these suffixes: E, P, T, G, M, K. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki."
+            }
+          }
+        }
+      }
     }
   },
   "type": "object",
@@ -208,6 +259,7 @@
     "initContainers": {
       "type": "array",
       "title": "Init Containers",
+      "default": [],
       "items": {
         "$ref": "#/definitions/sidecar"
       }

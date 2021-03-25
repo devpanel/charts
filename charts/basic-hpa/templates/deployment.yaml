@@ -61,7 +61,7 @@ spec:
           #     path: /
           #     port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.image.resources | nindent 12 }}
           {{- with .Values.image.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
