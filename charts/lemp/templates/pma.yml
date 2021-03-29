@@ -1,4 +1,15 @@
 {{- if .Values.pma.isEnabled  -}}
+
+{{- $apiVersion := "networking.k8s.io/v1" -}}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion  -}}
+{{- $apiVersion = "networking.k8s.io/v1" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $apiVersion = "networking.k8s.io/v1beta1" -}}
+{{- else -}}
+{{- $apiVersion = "extensions/v1beta1" -}}
+{{- end }}
+
+
 {{ $pmaFullName :=  include "lemp.fullname" . }}
 {{ $pmaFullName := printf "%s-%s" $pmaFullName "pma"  }}
 apiVersion: apps/v1
@@ -70,7 +81,7 @@ spec:
   selector:
     devpanel.com/phpmyadmin-instance: {{ $pmaFullName }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: "{{ $pmaFullName }}"
@@ -86,15 +97,23 @@ spec:
         - {{ .Values.pma.hostname | quote }}
   {{- end }}
   rules:
+    {{ if eq $apiVersion "networking.k8s.io/v1" }}
     - host: {{ .Values.pma.hostname | quote }}
       http:
         paths:
-          - path: "/"
-            backend: 
-              serviceName: "{{ $pmaFullName }}"
-              servicePort: http
-          - path: /devpanel/verify
-            backend:
-              serviceName: devpanel-authenticator
-              servicePort: 8080
+        - path: "/"
+          backend:
+            service:
+              name: "{{ $pmaFullName }}"
+              port:
+                number: 80
+    {{ else }}
+    - host: {{ .Values.pma.hostname | quote }}
+      http:
+        paths:
+        - path: "/"
+          backend: 
+            serviceName: "{{ $pmaFullName }}"
+            servicePort: http
+    {{ end }}
 {{- end -}}

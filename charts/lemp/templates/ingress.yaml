@@ -1,11 +1,16 @@
+{{- $apiVersion := "networking.k8s.io/v1" -}}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion  -}}
+{{- $apiVersion = "networking.k8s.io/v1" -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $apiVersion = "networking.k8s.io/v1beta1" -}}
+{{- else -}}
+{{- $apiVersion = "extensions/v1beta1" -}}
+{{- end }}
+
 {{- $fullName := include "lemp.fullname" . -}}
 {{- if .Values.ingress.enabled -}}
 {{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -33,6 +38,17 @@ spec:
 {{- end }}
   rules:
   {{- with .Values.application.hostname }}
+    {{ if eq $apiVersion "networking.k8s.io/v1" }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+        - path: /
+          backend:
+            service:
+              name: {{ $fullName }}
+              port: 
+                number: {{ $svcPort }}
+    {{ else }}
     - host: {{ . | quote }}
       http:
         paths:
@@ -40,8 +56,22 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
+    {{ end }}
   {{- end }}
   {{- range .Values.ingress.hosts }}
+    {{ if eq $apiVersion "networking.k8s.io/v1" }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+        - path: {{ . }}
+          backend:
+            service: 
+              name: {{ $fullName }}
+              port:
+                number: {{ $svcPort }}
+        {{- end }}
+    {{ else }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -51,12 +81,13 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
         {{- end }}
+    {{ end }}
   {{- end }}
 {{- end }}
 
 {{- if .Values.codeserver.isEnabled }}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: "{{ $fullName }}-codeserver"
@@ -72,17 +103,25 @@ spec:
         - {{ .Values.codeserver.hostname | quote }}
   {{- end }}
   rules:
+    {{ if eq $apiVersion "networking.k8s.io/v1" }}
     - host: {{ .Values.codeserver.hostname | quote }}
       http:
         paths:
-          - path: "/"
-            backend: 
-              serviceName: "{{ $fullName }}-codeserver"
-              servicePort: codeserver
-          - path: /devpanel/verify
-            backend:
-              serviceName: devpanel-authenticator
-              servicePort: 8080
+        - path: "/"
+          backend:
+            service:
+              name: "{{ $fullName }}-codeserver"
+              port:
+                number: 8080
+    {{ else }}
+    - host: {{ .Values.codeserver.hostname | quote }}
+      http:
+        paths:
+        - path: "/"
+          backend:
+            serviceName: "{{ $fullName }}-codeserver"
+            servicePort: codeserver
+    {{ end }}
 {{- end }}
 ---
 apiVersion: configuration.konghq.com/v1
