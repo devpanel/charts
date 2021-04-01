@@ -16,12 +16,12 @@
         },
         "cpu": {
           "type": "number",
-          "title": "CPU Threshold",
+          "title": "CPU Average",
           "description": "Example: 60"
         },
         "memory": {
           "type": "string",
-          "title": "Memory Threshold",
+          "title": "Memory Average",
           "description": "Example: 100Mi, 1Gi"
         }
       }
@@ -95,7 +95,7 @@
         },
         "resources": {
           "title": "Resources",
-          "description": "Resources for each container in deployment pods...",
+          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
           "$ref": "#/definitions/resources"
         },
         "volumeMounts": {
@@ -191,7 +191,7 @@
         },
         "volumeMounts": {
           "type": "array",
-          "title": "Volumes Mounts",
+          "title": "Volumes Mounths",
           "items": {
             "type": "object",
             "properties": {
@@ -212,14 +212,14 @@
       "type": "object",
       "properties": {
         "requests": {
-          "title": "Minimum Resources (aka \"Requests\" in Kubernetes)",
+          "title": "Requests",
           "type": "object",
           "properties": {
             "cpu": {
               "title": "CPU",
               "type": "string",
               "default": "100m",
-              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
             },
             "memory": {
               "title": "Memory",
@@ -230,14 +230,14 @@
           }
         },
         "limits": {
-          "title": "Maximum Resources (aka \"Limits\" in Kubernetes)",
+          "title": "Limits",
           "type": "object",
           "properties": {
             "cpu": {
               "title": "CPU",
               "type": "string",
               "default": "500m",
-              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
             },
             "memory": {
               "title": "Memory",
@@ -360,6 +360,12 @@
           }
         ]
       }
+    },
+    "replicaCount": {
+      "title": "Replicas Count (Minimum Replicas)",
+      "type": "number",
+      "description": "a number of replicas indicating how many Pods it should be maintaining, and a pod template specifying the data of new Pods it should create to meet the number of replicas criteria.",
+      "default": 1
     },
     "hpa": {
       "title": "HPA (Horizontal Pod Autoscaler)",
