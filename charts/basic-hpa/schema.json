@@ -361,6 +361,12 @@
         ]
       }
     },
+    "replicaCount": {
+      "title": "Replicas Count (Minimum Replicas)",
+      "type": "number",
+      "description": "a number of replicas indicating how many Pods it should be maintaining, and a pod template specifying the data of new Pods it should create to meet the number of replicas criteria.",
+      "default": 1
+    },
     "hpa": {
       "title": "HPA (Horizontal Pod Autoscaler)",
       "$ref": "#/definitions/hpa"
