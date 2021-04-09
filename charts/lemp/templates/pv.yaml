@@ -44,6 +44,9 @@ spec:
     requests:
       storage: {{ .Values.application.storage }}
   storageClassName: {{ .Values.application.storageClass }}
+  {{- if .Values.application.dataSource }}
+    {{- toYaml .Values.application.dataSource | nindent 2 }}
+  {{- end }}
 {{- end }}
 
 {{- range .Values.application.externalDisks }}
