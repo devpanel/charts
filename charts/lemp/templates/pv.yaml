@@ -45,7 +45,8 @@ spec:
       storage: {{ .Values.application.storage }}
   storageClassName: {{ .Values.application.storageClass }}
   {{- if .Values.application.dataSource }}
-    {{- toYaml .Values.application.dataSource | nindent 2 }}
+  dataSource:
+    {{- toYaml .Values.application.dataSource | nindent 4 }}
   {{- end }}
 {{- end }}
 
