@@ -1,8 +1,54 @@
 {
   "definitions": {
+    "servicePort": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "protocol": {
+          "title": "Protocol",
+          "type": "string"
+        },
+        "port": {
+          "title": "Port",
+          "type": "integer"
+        },
+        "targetPort": {
+          "title": "Target Port",
+          "type": "integer"
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Type",
+          "default": "ClusterIP"
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "$ref": "#/definitions/servicePort"
+          },
+          "default": [
+            {"name": "http", "protocol": "TCP", "port": 80, "targetPort": 80}
+          ]
+        }
+      }
+    },
     "hpa": {
       "type": "object",
-      "required": ["enabled"],
+      "required": [
+        "enabled"
+      ],
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -16,12 +62,12 @@
         },
         "cpu": {
           "type": "number",
-          "title": "CPU Average",
+          "title": "CPU Threshold",
           "description": "Example: 60"
         },
         "memory": {
           "type": "string",
-          "title": "Memory Average",
+          "title": "Memory Threshold",
           "description": "Example: 100Mi, 1Gi"
         }
       }
@@ -95,7 +141,7 @@
         },
         "resources": {
           "title": "Resources",
-          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
+          "description": "Resources for each container in deployment pods...",
           "$ref": "#/definitions/resources"
         },
         "volumeMounts": {
@@ -191,7 +237,7 @@
         },
         "volumeMounts": {
           "type": "array",
-          "title": "Volumes Mounths",
+          "title": "Volumes Mounts",
           "items": {
             "type": "object",
             "properties": {
@@ -212,14 +258,14 @@
       "type": "object",
       "properties": {
         "requests": {
-          "title": "Requests",
+          "title": "Minimum Resources (aka \"Requests\" in Kubernetes)",
           "type": "object",
           "properties": {
             "cpu": {
               "title": "CPU",
               "type": "string",
               "default": "100m",
-              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
             },
             "memory": {
               "title": "Memory",
@@ -230,14 +276,14 @@
           }
         },
         "limits": {
-          "title": "Limits",
+          "title": "Maximum Resources (aka \"Limits\" in Kubernetes)",
           "type": "object",
           "properties": {
             "cpu": {
               "title": "CPU",
               "type": "string",
               "default": "500m",
-              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
             },
             "memory": {
               "title": "Memory",
@@ -276,7 +322,9 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "title": "Secret Name",
@@ -284,6 +332,10 @@
           }
         }
       }
+    },
+    "service": {
+      "title": "Service",
+      "$ref": "#/definitions/service"
     },
     "deployment": {
       "type": "object",
@@ -321,7 +373,10 @@
         "anyOf": [
           {
             "title": "AWS EBS GP2",
-            "required": [ "name", "capability" ],
+            "required": [
+              "name",
+              "capability"
+            ],
             "properties": {
               "name": {
                 "title": "Name",
@@ -338,9 +393,13 @@
                 "default": "10Gi"
               }
             }
-          }, {
+          },
+          {
             "title": "EmptyDir",
-            "required": [ "name", "sizeLimit" ],
+            "required": [
+              "name",
+              "sizeLimit"
+            ],
             "properties": {
               "name": {
                 "title": "Name",
