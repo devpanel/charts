@@ -61,9 +61,6 @@
     "ingress": {
       "type": "object",
       "title": "Domains Configuration",
-      "required": [
-        "enabled"
-      ],
       "properties": {
         "enabled": {
           "title":"Enable",
