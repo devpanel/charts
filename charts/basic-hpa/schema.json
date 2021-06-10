@@ -4,7 +4,7 @@
       "title": "Annotations",
       "type": "object",
       "propertyNames": {
-        "pattern": "^[a-z]{2}$"
+        "pattern": "^[\\w\\/\\.]*$"
       },
       "additionalProperties": {
         "type": "string"
