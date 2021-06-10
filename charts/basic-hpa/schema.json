@@ -1,5 +1,15 @@
 {
   "definitions": {
+    "annotation": {
+      "title": "Annotations",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z]{2}$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "servicePort": {
       "type": "object",
       "properties": {
@@ -21,12 +31,66 @@
         }
       }
     },
-    "service": {
+    "ingressHostPath": {
       "type": "object",
+      "required": [ "path", "servicePort" ],
+      "properties": {
+        "path": {
+          "title":"Path",
+          "type": "string",
+          "default": "/"
+        },
+        "servicePort": {
+          "title": "Service Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHost": {
+      "type": "object",
+      "properties": {
+        "host":{
+          "type":"string",
+          "title": "Domain"
+        },
+        "paths": {
+          "$ref": "#/definitions/ingressHostPath"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "title": "Domains Configuration",
       "required": [
         "enabled"
       ],
       "properties": {
+        "enabled": {
+          "title":"Enable",
+          "type":"boolean"
+        },
+        "annotations": {
+          "$ref": "#/definitions/annotation",
+          "default": {
+            "kubernetes.io/ingress.class": "kong"
+          }
+        },
+        "hosts": {
+          "title": "Domains",
+          "type": "array",
+          "items": {
+            "$ref":"#/definitions/ingressHost"
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "name":{
+          "type":"string",
+          "title": "Name"
+        },
         "type": {
           "type": "string",
           "title": "Type",
@@ -37,10 +101,10 @@
           "title": "Ports",
           "items": {
             "$ref": "#/definitions/servicePort"
-          },
-          "default": [
-            {"name": "http", "protocol": "TCP", "port": 80, "targetPort": 80}
-          ]
+          }
+        },
+        "ingress": {
+          "$ref": "#/definitions/ingress"
         }
       }
     },
@@ -333,9 +397,12 @@
         }
       }
     },
-    "service": {
-      "title": "Service",
-      "$ref": "#/definitions/service"
+    "services": {
+      "title": "Additional Services",
+      "type":"array",
+      "items": {
+        "$ref": "#/definitions/service"
+      }
     },
     "deployment": {
       "type": "object",
@@ -356,14 +423,7 @@
       }
     },
     "podAnnotations": {
-      "title": "Annotations",
-      "type": "object",
-      "propertyNames": {
-        "pattern": "^[a-z]{2}$"
-      },
-      "additionalProperties": {
-        "type": "string"
-      }
+      "$ref": "#/definitions/annotation"
     },
     "volumes": {
       "title": "Volumes",
