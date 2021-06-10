@@ -82,11 +82,8 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  ports:
-  - name: http
-    protocol: TCP
-    port: 80
-    targetPort: 80
+  port: 80
+  targetPort: 80
 
 ingress:
   enabled: false
@@ -117,3 +114,30 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+services: []
+# - name: "jupyter" # maximum length is 12 
+#   type: "ClusterIP"
+#   ports:
+#   - name: jupyter
+#     protocol: TCP
+#     port: 8890
+#     targetPort: 8890
+#   - name: code-server
+#     protocol: TCP
+#     port: 8080
+#     targetPort: 8080
+#   ingress:
+#     enabled: true
+#     annotations:
+#       kubernetes.io/ingress.class: "kong"
+#     hosts:
+#       - host: jupyter.app.devpanel.com
+#         paths:
+#           - path: "/"
+#             servicePort: 8890
+#       - host: jupyter-code-server.app.devpanel.com
+#         paths:
+#           - path: "/"
+#             servicePort: 8080
+#     tls: []
