@@ -432,6 +432,7 @@
             "title": "AWS EBS GP2",
             "required": [
               "name",
+              "type",
               "capability"
             ],
             "properties": {
@@ -439,10 +440,34 @@
                 "title": "Name",
                 "type": "string"
               },
-              "storageClass": {
+              "type": {
                 "title": "Storage Class Name",
                 "type": "string",
                 "default": "ebs-gp2"
+              },
+              "capability": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          },
+          {
+            "title": "Amazon Elastic File System (AWS EFS)",
+            "required": [ "name", "type", "volumeHandler", "capability" ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "aws-efs"
+              },
+              "volumeHandler": {
+                "title": "Volume Handler ID",
+                "type": "string"
               },
               "capability": {
                 "title": "Capability",
@@ -462,7 +487,7 @@
                 "title": "Name",
                 "type": "string"
               },
-              "storageClass": {
+              "type": {
                 "title": "Storage Class Name",
                 "type": "string",
                 "default": "emptydir"

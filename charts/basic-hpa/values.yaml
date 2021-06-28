@@ -46,7 +46,14 @@ initContainers: []
       #   mountPath: /var/www/html
 volumes: []
   # - name: app-root
-  #   storageClass: ebs-gp2
+  #   type: ebs-gp2
+  #   capability: 10Gi
+  # - name: empty-dir
+  #   type: emptydir
+  #   sizeLimit: 10Gi
+  # - name: efs
+  #   type: efs
+  #   volumeHandler: "fs-abc12345"
   #   capability: 10Gi
 
 imagePullSecrets: []

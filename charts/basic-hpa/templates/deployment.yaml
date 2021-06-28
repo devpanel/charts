@@ -71,12 +71,17 @@ spec:
       {{ with .Values.volumes }}
       volumes:
       {{ range . }}
-      {{ if eq .storageClass "ebs-gp2" }}
+      {{ if eq .type "ebs-gp2" }}
       - name: {{ .name }}
         persistentVolumeClaim:
           claimName: {{ .name }}
       {{ end }}
-      {{ if eq .storageClass "emptydir" }}
+      {{ if eq .type "aws-efs" }}
+      - name: {{ .name }}
+        persistentVolumeClaim:
+          claimName: {{ .name }}
+      {{ end }}
+      {{ if eq .type "emptydir" }}
       - name: {{ .name }}
         emptyDir:
           sizeLimit: {{ .sizeLimit }}
