@@ -17,7 +17,7 @@ spec:
         {{- include "basic-hpa.selectorLabels" . | nindent 8 }}
       {{- with .Values.podAnnotations }}
       annotations:
-        {{ toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
