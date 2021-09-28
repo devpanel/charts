@@ -133,7 +133,7 @@
         }
       }
     },
-    "sidecar": {
+    "container": {
       "type": "object",
       "required": [
         "name",
@@ -224,97 +224,6 @@
         }
       }
     },
-    "container": {
-      "type": "object",
-      "required": [
-        "repository",
-        "tag",
-        "imagePullPolicy"
-      ],
-      "properties": {
-        "repository": {
-          "type": "string",
-          "title": "Repository"
-        },
-        "tag": {
-          "type": "string",
-          "title": "Tag"
-        },
-        "command": {
-          "type": "array",
-          "title": "Command",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
-        "imagePullPolicy": {
-          "type": "string",
-          "title": "Pull Policy",
-          "default": "Always",
-          "enum": [
-            "Always",
-            "IfNotPresent"
-          ]
-        },
-        "ports": {
-          "type": "array",
-          "title": "Ports",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "title": "Name"
-              },
-              "containerPort": {
-                "type": "integer",
-                "title": "Container Port"
-              }
-            }
-          }
-        },
-        "env": {
-          "type": "array",
-          "title": "Environments",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "title": "Key"
-              },
-              "value": {
-                "type": "string",
-                "title": "Value"
-              }
-            }
-          }
-        },
-        "resources": {
-          "title": "Resources",
-          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
-          "$ref": "#/definitions/resources"
-        },
-        "volumeMounts": {
-          "type": "array",
-          "title": "Volumes Mounts",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "title": "Name",
-                "type": "string"
-              },
-              "mountPath": {
-                "title": "Mount Path",
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
     "resources": {
       "type": "object",
       "properties": {
@@ -368,14 +277,14 @@
       "title": "Init Containers",
       "default": [],
       "items": {
-        "$ref": "#/definitions/sidecar"
+        "$ref": "#/definitions/container"
       }
     },
     "sidecars": {
       "type": "array",
       "title": "Sidecars",
       "items": {
-        "$ref": "#/definitions/sidecar"
+        "$ref": "#/definitions/container"
       }
     },
     "imagePullSecrets": {
