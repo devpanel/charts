@@ -18,7 +18,7 @@ spec:
     {{- include "basic-hpa.selectorLabels" $ | nindent 4 }}
 {{ if .ingress.enabled -}}
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
@@ -29,7 +29,22 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .ingress.tls -}}
+  rules:
+  {{- range .ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $svcName }}
+                port: 
+                  number: {{ .servicePort }}
+        {{- end }}
+  {{- end }}
+  {{- if .ingress.tls }}
   tls:
   {{- range .ingress.tls }}
     - hosts:
@@ -39,18 +54,6 @@ spec:
       secretName: {{ .secretName }}
   {{- end }}
 {{- end }}
-  rules:
-  {{- range .ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-        {{- range .paths }}
-          - path: {{ .path }}
-            backend:
-              serviceName: {{ $svcName }}
-              servicePort: {{ .servicePort }}
-        {{- end }}
-  {{- end }}
 {{- end }}
 {{ end }}
 {{- end }}

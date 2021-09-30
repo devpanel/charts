@@ -13,7 +13,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .capability }}
+      storage: {{ .capacity }}
   storageClassName: "ebs-gp2"
 {{ end }}
 {{ if eq .type "aws-efs" }}
@@ -32,7 +32,7 @@ metadata:
   name: {{ .name }}
 spec:
   capacity:
-    storage: {{ .capability }}
+    storage: {{ .capacity }}
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
@@ -54,7 +54,7 @@ spec:
   storageClassName: {{ .name }}
   resources:
     requests:
-      storage: {{ .capability }}
+      storage: {{ .capacity }}
 {{ end }}
 {{- end }}
 {{- end -}}
