@@ -85,6 +85,23 @@ spec:
         {{- end }}
     {{ end }}
   {{- end }}
+---
+apiVersion: configuration.konghq.com/v1
+kind: KongIngress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "lemp.labels" . | nindent 4 }}
+route:
+  {{ if .Values.ingress.forceSSL }}
+  protocols:
+    - https
+  https_redirect_status_code: 302
+  {{ else }}
+  protocols:
+    - http
+    - https
+  {{ end }}
 {{- end }}
 
 {{- if .Values.codeserver.isEnabled }}
@@ -126,20 +143,3 @@ spec:
             servicePort: codeserver
     {{ end }}
 {{- end }}
----
-apiVersion: configuration.konghq.com/v1
-kind: KongIngress
-metadata:
-  name: {{ $fullName }}
-  labels:
-    {{- include "lemp.labels" . | nindent 4 }}
-route:
-  {{ if .Values.ingress.forceSSL }}
-  protocols:
-    - https
-  https_redirect_status_code: 302
-  {{ else }}
-  protocols:
-    - http
-    - https
-  {{ end }}

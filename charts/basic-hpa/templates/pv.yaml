@@ -1,7 +1,7 @@
 {{- if .Values.volumes }}
 {{- range .Values.volumes }}
+{{ if eq .type "ebs-gp2" }}
 ---
-{{- if eq .storageClass "ebs-gp2" }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -13,8 +13,48 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .capability }}
-  storageClassName: {{ .storageClass }}
-{{- end }}
+      storage: {{ .capacity }}
+  storageClassName: "ebs-gp2"
+{{ end }}
+{{ if eq .type "aws-efs" }}
+# Static provisioning
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .name }}
+provisioner: efs.csi.aws.com
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .name }}
+spec:
+  capacity:
+    storage: {{ .capacity }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ .name }}
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .volumeHandler }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "basic-hpa.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .name }}
+  resources:
+    requests:
+      storage: {{ .capacity }}
+{{ end }}
 {{- end }}
 {{- end -}}

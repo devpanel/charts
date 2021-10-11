@@ -1,8 +1,115 @@
 {
   "definitions": {
+    "annotation": {
+      "title": "Annotations",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[\\w\\/\\.-]*$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "servicePort": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "protocol": {
+          "title": "Protocol",
+          "type": "string"
+        },
+        "port": {
+          "title": "Port",
+          "type": "integer"
+        },
+        "targetPort": {
+          "title": "Target Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHostPath": {
+      "type": "object",
+      "required": [ "path", "servicePort" ],
+      "properties": {
+        "path": {
+          "title":"Path",
+          "type": "string",
+          "default": "/"
+        },
+        "servicePort": {
+          "title": "Service Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHost": {
+      "type": "object",
+      "properties": {
+        "host":{
+          "type":"string",
+          "title": "Domain"
+        },
+        "paths": {
+          "$ref": "#/definitions/ingressHostPath"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "title": "Domains Configuration",
+      "properties": {
+        "enabled": {
+          "title":"Enable",
+          "type":"boolean"
+        },
+        "annotations": {
+          "$ref": "#/definitions/annotation",
+          "default": {
+            "kubernetes.io/ingress.class": "kong"
+          }
+        },
+        "hosts": {
+          "title": "Domains",
+          "type": "array",
+          "items": {
+            "$ref":"#/definitions/ingressHost"
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "name":{
+          "type":"string",
+          "title": "Name"
+        },
+        "type": {
+          "type": "string",
+          "title": "Type",
+          "default": "ClusterIP"
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "$ref": "#/definitions/servicePort"
+          }
+        },
+        "ingress": {
+          "$ref": "#/definitions/ingress"
+        }
+      }
+    },
     "hpa": {
       "type": "object",
-      "required": ["enabled"],
+      "required": [
+        "enabled"
+      ],
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -16,17 +123,17 @@
         },
         "cpu": {
           "type": "number",
-          "title": "CPU Average",
+          "title": "CPU Threshold",
           "description": "Example: 60"
         },
         "memory": {
           "type": "string",
-          "title": "Memory Average",
+          "title": "Memory Threshold",
           "description": "Example: 100Mi, 1Gi"
         }
       }
     },
-    "sidecar": {
+    "container": {
       "type": "object",
       "required": [
         "name",
@@ -95,7 +202,7 @@
         },
         "resources": {
           "title": "Resources",
-          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
+          "description": "Resources for each container in deployment pods...",
           "$ref": "#/definitions/resources"
         },
         "volumeMounts": {
@@ -117,109 +224,18 @@
         }
       }
     },
-    "container": {
-      "type": "object",
-      "required": [
-        "repository",
-        "tag",
-        "imagePullPolicy"
-      ],
-      "properties": {
-        "repository": {
-          "type": "string",
-          "title": "Repository"
-        },
-        "tag": {
-          "type": "string",
-          "title": "Tag"
-        },
-        "command": {
-          "type": "array",
-          "title": "Command",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
-        "imagePullPolicy": {
-          "type": "string",
-          "title": "Pull Policy",
-          "default": "Always",
-          "enum": [
-            "Always",
-            "IfNotPresent"
-          ]
-        },
-        "ports": {
-          "type": "array",
-          "title": "Ports",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "title": "Name"
-              },
-              "containerPort": {
-                "type": "integer",
-                "title": "Container Port"
-              }
-            }
-          }
-        },
-        "env": {
-          "type": "array",
-          "title": "Environments",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "title": "Key"
-              },
-              "value": {
-                "type": "string",
-                "title": "Value"
-              }
-            }
-          }
-        },
-        "resources": {
-          "title": "Resources",
-          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
-          "$ref": "#/definitions/resources"
-        },
-        "volumeMounts": {
-          "type": "array",
-          "title": "Volumes Mounths",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "title": "Name",
-                "type": "string"
-              },
-              "mountPath": {
-                "title": "Mount Path",
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
     "resources": {
       "type": "object",
       "properties": {
         "requests": {
-          "title": "Requests",
+          "title": "Minimum Resources (aka \"Requests\" in Kubernetes)",
           "type": "object",
           "properties": {
             "cpu": {
               "title": "CPU",
               "type": "string",
               "default": "100m",
-              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
             },
             "memory": {
               "title": "Memory",
@@ -230,14 +246,14 @@
           }
         },
         "limits": {
-          "title": "Limits",
+          "title": "Maximum Resources (aka \"Limits\" in Kubernetes)",
           "type": "object",
           "properties": {
             "cpu": {
               "title": "CPU",
               "type": "string",
               "default": "500m",
-              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors."
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
             },
             "memory": {
               "title": "Memory",
@@ -261,14 +277,14 @@
       "title": "Init Containers",
       "default": [],
       "items": {
-        "$ref": "#/definitions/sidecar"
+        "$ref": "#/definitions/container"
       }
     },
     "sidecars": {
       "type": "array",
       "title": "Sidecars",
       "items": {
-        "$ref": "#/definitions/sidecar"
+        "$ref": "#/definitions/container"
       }
     },
     "imagePullSecrets": {
@@ -276,13 +292,22 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "title": "Secret Name",
             "type": "string"
           }
         }
+      }
+    },
+    "services": {
+      "title": "Additional Services",
+      "type":"array",
+      "items": {
+        "$ref": "#/definitions/service"
       }
     },
     "deployment": {
@@ -304,14 +329,7 @@
       }
     },
     "podAnnotations": {
-      "title": "Annotations",
-      "type": "object",
-      "propertyNames": {
-        "pattern": "^[a-z]{2}$"
-      },
-      "additionalProperties": {
-        "type": "string"
-      }
+      "$ref": "#/definitions/annotation"
     },
     "volumes": {
       "title": "Volumes",
@@ -321,13 +339,17 @@
         "anyOf": [
           {
             "title": "AWS EBS GP2",
-            "required": [ "name", "capability" ],
+            "required": [
+              "name",
+              "type",
+              "capability"
+            ],
             "properties": {
               "name": {
                 "title": "Name",
                 "type": "string"
               },
-              "storageClass": {
+              "type": {
                 "title": "Storage Class Name",
                 "type": "string",
                 "default": "ebs-gp2"
@@ -338,15 +360,43 @@
                 "default": "10Gi"
               }
             }
-          }, {
-            "title": "EmptyDir",
-            "required": [ "name", "sizeLimit" ],
+          },
+          {
+            "title": "Amazon Elastic File System (AWS EFS)",
+            "required": [ "name", "type", "volumeHandler", "capability" ],
             "properties": {
               "name": {
                 "title": "Name",
                 "type": "string"
               },
-              "storageClass": {
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "aws-efs"
+              },
+              "volumeHandler": {
+                "title": "Volume Handler ID",
+                "type": "string"
+              },
+              "capability": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          },
+          {
+            "title": "EmptyDir",
+            "required": [
+              "name",
+              "sizeLimit"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
                 "title": "Storage Class Name",
                 "type": "string",
                 "default": "emptydir"
