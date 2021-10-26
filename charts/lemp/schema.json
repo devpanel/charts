@@ -1,0 +1,402 @@
+{
+  "definitions": {
+    "annotation": {
+      "title": "Annotations",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[\\w\\/\\.-]*$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "servicePort": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "protocol": {
+          "title": "Protocol",
+          "type": "string"
+        },
+        "port": {
+          "title": "Port",
+          "type": "integer"
+        },
+        "targetPort": {
+          "title": "Target Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHostPath": {
+      "type": "object",
+      "required": [ "path", "servicePort" ],
+      "properties": {
+        "path": {
+          "title":"Path",
+          "type": "string",
+          "default": "/"
+        },
+        "servicePort": {
+          "title": "Service Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHost": {
+      "type": "object",
+      "properties": {
+        "host":{
+          "type":"string",
+          "title": "Domain"
+        },
+        "paths": {
+          "$ref": "#/definitions/ingressHostPath"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "title": "Domains Configuration",
+      "properties": {
+        "enabled": {
+          "title":"Enable",
+          "type":"boolean"
+        },
+        "annotations": {
+          "$ref": "#/definitions/annotation",
+          "default": {
+            "kubernetes.io/ingress.class": "kong"
+          }
+        },
+        "hosts": {
+          "title": "Domains",
+          "type": "array",
+          "items": {
+            "$ref":"#/definitions/ingressHost"
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "name":{
+          "type":"string",
+          "title": "Name"
+        },
+        "type": {
+          "type": "string",
+          "title": "Type",
+          "default": "ClusterIP"
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "$ref": "#/definitions/servicePort"
+          }
+        },
+        "ingress": {
+          "$ref": "#/definitions/ingress"
+        }
+      }
+    },
+    "hpa": {
+      "type": "object",
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable",
+          "default": false
+        },
+        "maxReplicas": {
+          "type": "number",
+          "title": "Maximum Replicas",
+          "default": 10
+        },
+        "cpu": {
+          "type": "number",
+          "title": "CPU Threshold",
+          "description": "Example: 60"
+        },
+        "memory": {
+          "type": "string",
+          "title": "Memory Threshold",
+          "description": "Example: 100Mi, 1Gi"
+        }
+      }
+    },
+    "container": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "resources"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Repository"
+        },
+        "version": {
+          "type": "string",
+          "title": "Tag"
+        },
+        "command": {
+          "type": "array",
+          "title": "Command",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "imagePullPolicy": {
+          "type": "string",
+          "title": "Pull Policy",
+          "default": "Always",
+          "enum": [
+            "Always",
+            "IfNotPresent"
+          ]
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "containerPort": {
+                "type": "integer",
+                "title": "Container Port"
+              }
+            }
+          }
+        },
+        "env": {
+          "type": "array",
+          "title": "Environments",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Key"
+              },
+              "value": {
+                "type": "string",
+                "title": "Value"
+              }
+            }
+          }
+        },
+        "resources": {
+          "title": "Resources",
+          "description": "When you specify the resource request for Containers in a Pod, the scheduler uses this information to decide which node to place the Pod on. When you specify a resource limit for a Container, the kubelet enforces those limits so that the running container is not allowed to use more of that resource than the limit you set.",
+          "$ref": "#/definitions/resources"
+        },
+        "volumeMounts": {
+          "type": "array",
+          "title": "Volumes Mounts",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "mountPath": {
+                "title": "Mount Path",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "required": ["requests", "limits"],
+      "properties": {
+        "requests": {
+          "title": "Minimum Resources (aka \"Requests\" in Kubernetes)",
+          "type": "object",
+          "required": ["cpu","memory","ephemeral-storage"],
+          "properties": {
+            "cpu": {
+              "title": "CPU",
+              "type": "string",
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
+            },
+            "memory": {
+              "title": "Memory",
+              "type": "string",
+              "description": "You can express memory as a plain integer or as a fixed-point number using one of these suffixes: E, P, T, G, M, K. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki."
+            },
+            "ephemeral-storage": {
+              "title": "Ephemeral Storage",
+              "type": "string"
+            }
+          }
+        },
+        "limits": {
+          "title": "Maximum Resources (aka \"Limits\" in Kubernetes)",
+          "type": "object",
+          "required": ["cpu","memory","ephemeral-storage"],
+          "properties": {
+            "cpu": {
+              "title": "CPU",
+              "type": "string",
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
+            },
+            "memory": {
+              "title": "Memory",
+              "type": "string",
+              "description": "You can express memory as a plain integer or as a fixed-point number using one of these suffixes: E, P, T, G, M, K. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki."
+            },
+            "ephemeral-storage": {
+              "title": "Ephemeral Storage",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "images": {
+      "type": "object",
+      "title": "LEMP Images",
+      "properties": {
+        "php": {
+          "title": "PHP",
+          "$ref": "#/definitions/container"
+        },
+        "nginx": {
+          "title": "Nginx",
+          "$ref": "#/definitions/container"
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "title": "Image Pull Secrets",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "title": "Secret Name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "services": {
+      "title": "Additional Services",
+      "type":"array",
+      "items": {
+        "$ref": "#/definitions/service"
+      }
+    },
+    "volumes": {
+      "title": "Volumes",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "anyOf": [
+          {
+            "title": "AWS EBS GP2",
+            "required": [
+              "name",
+              "type",
+              "capacity"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "ebs-gp2"
+              },
+              "capacity": {
+                "title": "Capacity",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          },
+          {
+            "title": "Amazon Elastic File System (AWS EFS)",
+            "required": [ "name", "type", "volumeHandler", "capacity" ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "aws-efs"
+              },
+              "volumeHandler": {
+                "title": "Volume Handler ID",
+                "type": "string"
+              },
+              "capacity": {
+                "title": "Capacity",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          },
+          {
+            "title": "EmptyDir",
+            "required": [
+              "name",
+              "sizeLimit"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "emptydir"
+              },
+              "sizeLimit": {
+                "title": "Capacity",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "replicaCount": {
+      "title": "Replicas Count (Minimum Replicas)",
+      "type": "number",
+      "description": "a number of replicas indicating how many Pods it should be maintaining, and a pod template specifying the data of new Pods it should create to meet the number of replicas criteria.",
+      "default": 1
+    }
+  }
+}
