@@ -200,6 +200,33 @@
             }
           }
         },
+        "envFrom": {
+          "type": "array",
+          "title": "EnvFromSource",
+          "description": "EnvFromSource represents the source of a set of ConfigMaps/Secrets",
+          "items": {
+            "type": "object",
+            "properties": {
+              "secretRef": {
+                "type": "object",
+                "title": "The Secret to select from",
+                "description": "Secret referent",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "Secret Name",
+                    "description": "Name of the referent"
+                  },
+                  "optional": {
+                    "type": "boolean",
+                    "title": "Optional",
+                    "description": "Specify whether the Secret must be defined"
+                  }
+                }
+              }
+            }
+          }
+        },
         "resources": {
           "title": "Resources",
           "description": "Resources for each container in deployment pods...",

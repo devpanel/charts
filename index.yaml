@@ -1,31 +1,5 @@
 apiVersion: v1
 entries:
-  basic-lemp:
-  - apiVersion: v2
-    appVersion: 1.16.0
-    created: "2021-02-01T15:24:34.6246284Z"
-    dependencies:
-    - name: basic-hpa
-      repository: https://charts.devpanel.com
-      version: 0.3.6
-    description: A Helm chart for Kubernetes
-    digest: 9dff883d1d7dcca48d00e8b73523d9c3129cb2568e5e43ffe1cbdcde09bd1af6
-    name: basic-lemp
-    type: application
-    urls:
-    - https://github.com/devpanel/charts/releases/download/basic-lemp-0.1.1/basic-lemp-0.1.1.tgz
-    version: 0.1.1
-  basic-cronjob:
-  - apiVersion: v2
-    appVersion: 0.0.1
-    created: "2021-02-02T11:17:52.6726725Z"
-    description: A Helm chart for Kubernetes
-    digest: ebca620be220e18e69a7dbf0af53f440bc0c388178329264f3b71da2b6744550
-    name: basic-cronjob
-    type: application
-    urls:
-    - https://github.com/devpanel/charts/releases/download/basic-cronjob-0.0.1/basic-cronjob-0.0.1.tgz
-    version: 0.0.1
   basic-hpa:
   - apiVersion: v2
     appVersion: 0.0.1
@@ -157,35 +131,4 @@ entries:
     urls:
     - https://github.com/devpanel/charts/releases/download/basic-hpa-0.1.1/basic-hpa-0.1.1.tgz
     version: 0.1.1
-  lemp:
-  - apiVersion: v2
-    appVersion: 0.1.0
-    created: "2020-12-09T04:50:45.621840653Z"
-    description: A Helm chart for Kubernetes
-    digest: d34dd6cfe02aa3760794e510b0b3aa5b1a339630c6c57e0070e20204a2c15969
-    name: lemp
-    type: application
-    urls:
-    - https://github.com/devpanel/charts/releases/download/lemp-0.1.4/lemp-0.1.4.tgz
-    version: 0.1.4
-  - apiVersion: v2
-    appVersion: 0.1.0
-    created: "2020-12-19T14:15:18.4294511Z"
-    description: A Helm chart for Kubernetes
-    digest: 4149a0b80fb262d232138e959aad73d619d63418eeef30178ff498e5bf157ed7
-    name: lemp
-    type: application
-    urls:
-    - https://github.com/devpanel/charts/releases/download/lemp-0.1.5/lemp-0.1.5.tgz
-    version: 0.1.5
-  - apiVersion: v2
-    appVersion: 0.1.0
-    created: "2020-12-21T09:45:47.4095567Z"
-    description: A Helm chart for Kubernetes
-    digest: 5853df6e2b8850d5bc267cb8ce7cb24502fec5accb7e3233480e9eb41f78616f
-    name: lemp
-    type: application
-    urls:
-    - https://github.com/devpanel/charts/releases/download/lemp-0.1.6/lemp-0.1.6.tgz
-    version: 0.1.6
 generated: "2020-12-09T04:50:44.657249755Z"

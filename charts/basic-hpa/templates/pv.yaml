@@ -1,6 +1,6 @@
 {{- if .Values.volumes }}
 {{- range .Values.volumes }}
-{{ if eq .type "ebs-gp2" }}
+{{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -14,7 +14,7 @@ spec:
   resources:
     requests:
       storage: {{ .capacity }}
-  storageClassName: "ebs-gp2"
+  storageClassName: {{ .type }}
 {{ end }}
 {{ if eq .type "aws-efs" }}
 # Static provisioning
