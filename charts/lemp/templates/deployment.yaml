@@ -45,6 +45,10 @@ spec:
             - name: CODES_ENABLE
               value: ""
             {{ end  }}
+            {{ with .Values.application.gitBranch }}
+            - name: DP_GIT_BRANCH
+              value: {{ . }}
+            {{ end }}
             {{ if .Values.application.dbName }}
             - name: DB_HOST
               valueFrom:
