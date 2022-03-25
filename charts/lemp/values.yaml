@@ -48,6 +48,7 @@ application:
   #   kind: VolumeSnapshot
   #   apiGroup: snapshot.storage.k8s.io
   volumeHandler: ""
+  gitBranch: ""
   dbHost: ""
   dbName: ""
   dbUser: ""
