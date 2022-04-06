@@ -79,15 +79,15 @@ spec:
       {{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") }}
       - name: {{ .name }}
         persistentVolumeClaim:
-          claimName: {{ .name }}
+          claimName: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
       {{ end }}
       {{ if eq .type "aws-efs" }}
       - name: {{ .name }}
         persistentVolumeClaim:
-          claimName: {{ .name }}
+          claimName: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
       {{ end }}
       {{ if eq .type "emptydir" }}
-      - name: {{ .name }}
+      - name: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
         emptyDir:
           sizeLimit: {{ .sizeLimit }}
       {{ end }}
