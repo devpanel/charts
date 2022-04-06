@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: latest
+  name: nginx
+  image: nginx:latest
   imagePullPolicy: IfNotPresent
   env: []
   envFrom: []
@@ -82,7 +82,11 @@ deploymentStrategy:
 
 podAnnotations: {}
 
+# Additional labels for pods
 podAdditionalLabels: {}
+
+# Additional for all resources created by this helm charts
+additionalLabels: {}
 
 serviceAccount:
   # Specifies whether a service account should be created
