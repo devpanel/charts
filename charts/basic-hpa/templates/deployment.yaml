@@ -87,7 +87,7 @@ spec:
           claimName: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
       {{ end }}
       {{ if eq .type "emptydir" }}
-      - name: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
+      - name: "{{ .name }}"
         emptyDir:
           sizeLimit: {{ .sizeLimit }}
       {{ end }}
