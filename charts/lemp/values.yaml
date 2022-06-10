@@ -43,7 +43,12 @@ application:
   type: ""
   storage: ""
   storageClass: ""
+  # dataSource:
+  #   name: ebs-volume-example
+  #   kind: VolumeSnapshot
+  #   apiGroup: snapshot.storage.k8s.io
   volumeHandler: ""
+  gitBranch: ""
   dbHost: ""
   dbName: ""
   dbUser: ""

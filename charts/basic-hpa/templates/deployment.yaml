@@ -15,9 +15,12 @@ spec:
     metadata:
       labels:
         {{- include "basic-hpa.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podAdditionalLabels }}
+          {{- toYaml . | nindent 8 }}  
+        {{- end }}  
       {{- with .Values.podAnnotations }}
       annotations:
-        {{ toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
@@ -32,10 +35,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Values.image.name | default .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.image }}"
           {{- with .Values.image.command }}
           command:
             {{- toYaml . | nindent 12 }}
@@ -45,21 +48,22 @@ spec:
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.image.secretENV }}
+          {{- with .Values.image.envFrom }}
+          envFrom:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          {{- with .Values.image.ports -}}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.image.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.image.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.image.resources | nindent 12 }}
           {{- with .Values.image.volumeMounts }}
@@ -72,13 +76,18 @@ spec:
       {{ with .Values.volumes }}
       volumes:
       {{ range . }}
-      {{ if eq .storageClass "ebs-gp2" }}
+      {{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") }}
       - name: {{ .name }}
         persistentVolumeClaim:
-          claimName: {{ .name }}
+          claimName: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
       {{ end }}
-      {{ if eq .storageClass "emptydir" }}
+      {{ if eq .type "aws-efs" }}
       - name: {{ .name }}
+        persistentVolumeClaim:
+          claimName: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
+      {{ end }}
+      {{ if eq .type "emptydir" }}
+      - name: "{{ .name }}"
         emptyDir:
           sizeLimit: {{ .sizeLimit }}
       {{ end }}

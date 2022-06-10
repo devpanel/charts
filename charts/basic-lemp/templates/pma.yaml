@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: phpmyadmin
-          image: "phpmyadmin/phpmyadmin"
+          image: "phpmyadmin/phpmyadmin:4.9.3"
           env:
             {{- toYaml .Values.pma.env | nindent 12 }}
           ports:

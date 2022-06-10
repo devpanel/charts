@@ -45,6 +45,10 @@ spec:
             - name: CODES_ENABLE
               value: ""
             {{ end  }}
+            {{ with .Values.application.gitBranch }}
+            - name: DP_GIT_BRANCH
+              value: {{ . }}
+            {{ end }}
             {{ if .Values.application.dbName }}
             - name: DB_HOST
               valueFrom:
@@ -74,8 +78,6 @@ spec:
               containerPort: 8080
               protocol: TCP
             {{ end }}
-          resources:
-            {{- toYaml .Values.images.php.resources | nindent 12 }}
           volumeMounts:
             - name: app-volume
               mountPath: "{{ .Values.application.appRoot }}"
@@ -88,6 +90,8 @@ spec:
         {{ end }}
         {{ if .Values.images.nginx.name }}
         - name: nginx
+          resources:
+            {{- toYaml .Values.images.nginx.resources | nindent 12 }}
           image: "{{ .Values.images.nginx.name }}:{{ .Values.images.nginx.version }}"
           imagePullPolicy: {{ .Values.images.nginx.pullPolicy }}
           env:
@@ -97,8 +101,6 @@ spec:
           ports:
             - containerPort: {{ .Values.images.nginx.containerPort }}
               name: http
-          resources:
-            {{- toYaml .Values.images.nginx.resources | nindent 12 }}
           volumeMounts:
             - name: app-volume
               mountPath: "{{ .Values.application.appRoot }}"

@@ -1,0 +1,59 @@
+{{- if .Values.services -}}
+{{- range .Values.services -}}
+{{- $svcName := include "basic-hpa.fullname" $ -}}
+{{- $svcName = printf "%s-%s" $svcName .name -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $svcName }}
+  labels:
+    test: test
+    {{- include "basic-hpa.labels" $ | nindent 4 }}
+spec:
+  type: {{ .type }}
+  ports:
+    {{- toYaml .ports | nindent 4 }}
+  selector:
+    {{- include "basic-hpa.selectorLabels" $ | nindent 4 }}
+{{ if .ingress.enabled -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
+  labels:
+    {{- include "basic-hpa.labels" $ | nindent 4 }}
+  annotations:
+  {{- with .ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+  {{- range .ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $svcName }}
+                port: 
+                  number: {{ .servicePort }}
+        {{- end }}
+  {{- end }}
+  {{- if .ingress.tls }}
+  tls:
+  {{- range .ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{ end }}
+{{- end }}
