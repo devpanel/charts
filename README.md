@@ -5,12 +5,12 @@ This is the official Helm Charts repository for installing DevPanel on Kubernete
 ## Setup
 
 ```bash
-$ helm repo add devpanel http://charts.devpanel.com;
-$ helm repo update
+helm repo add devpanel http://charts.devpanel.com;
+helm repo update
 
 # Helm 3
-$ helm repo add devpanel https://charts.devpanel.com
-$ helm install devpanel/basic-hpa --generate-name
+helm repo add devpanel https://charts.devpanel.com
+helm install devpanel/basic-hpa --generate-name
 ```
 
 ## License
