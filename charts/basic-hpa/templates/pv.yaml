@@ -15,6 +15,10 @@ spec:
     requests:
       storage: {{ .capacity }}
   storageClassName: {{ .type }}
+  {{- if .dataSource }}
+  dataSource:
+    {{- toYaml .dataSource | nindent 4 }}
+  {{- end }}
 {{ end }}
 {{ if eq .type "aws-efs" }}
 # Static provisioning
