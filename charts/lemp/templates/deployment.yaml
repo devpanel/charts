@@ -49,28 +49,6 @@ spec:
             - name: DP_GIT_BRANCH
               value: {{ . }}
             {{ end }}
-            {{ if .Values.application.dbName }}
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_HOST"
-            - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_NAME"
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_USER"
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "lemp.fullname" . }}
-                  key: "DB_PASSWORD"
-            {{ end }}
           ports:
             - containerPort: {{ .Values.images.php.containerPort }}
             {{ if .Values.codeserver.isEnabled }}
