@@ -116,6 +116,7 @@ service:
   type: ClusterIP
   port: 80
   targetPort: http
+  annotations: {}
 
 ingress:
   enabled: false
