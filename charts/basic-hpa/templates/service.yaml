@@ -12,7 +12,12 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      name: http
       targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+    - port: 22
+      name: ssh
+      targetPort: 22
       protocol: TCP
   selector:
     {{- include "basic-hpa.selectorLabels" . | nindent 4 }}
