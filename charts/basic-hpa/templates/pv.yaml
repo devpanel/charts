@@ -1,6 +1,7 @@
 {{- if .Values.volumes }}
 {{- range .Values.volumes }}
-{{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") }}
+
+{{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") (eq .type "do-block-storage") }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -15,7 +16,12 @@ spec:
     requests:
       storage: {{ .capacity }}
   storageClassName: {{ .type }}
+  {{- if .dataSource }}
+  dataSource:
+    {{- toYaml .dataSource | nindent 4 }}
+  {{- end }}
 {{ end }}
+
 {{ if eq .type "aws-efs" }}
 # Static provisioning
 ---
@@ -56,5 +62,6 @@ spec:
     requests:
       storage: {{ .capacity }}
 {{ end }}
+
 {{- end }}
 {{- end -}}

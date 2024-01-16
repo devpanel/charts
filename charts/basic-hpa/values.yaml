@@ -64,6 +64,10 @@ volumes: []
   # - name: app-root
   #   type: ebs-gp2
   #   capacity: 10Gi
+  #   dataSource:
+  #     apiGroup: snapshot.storage.k8s.io
+  #     kind: VolumeSnapshot
+  #     name: dev-1b17f169-4b6c171c-ql87s9rd-test
   # - name: empty-dir
   #   type: emptydir
   #   sizeLimit: 10Gi
@@ -112,6 +116,7 @@ service:
   type: ClusterIP
   port: 80
   targetPort: http
+  annotations: {}
 
 ingress:
   enabled: false
