@@ -51,6 +51,7 @@ spec:
 {{- end }}
 
 {{- range .Values.application.externalDisks }}
+
 {{- if .enabled }}
 ---
 apiVersion: v1
