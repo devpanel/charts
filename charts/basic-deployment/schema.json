@@ -1,0 +1,452 @@
+{
+  "definitions": {
+    "annotation": {
+      "title": "Annotations",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[\\w\\/\\.-]*$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "servicePort": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "protocol": {
+          "title": "Protocol",
+          "type": "string"
+        },
+        "port": {
+          "title": "Port",
+          "type": "integer"
+        },
+        "targetPort": {
+          "title": "Target Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHostPath": {
+      "type": "object",
+      "required": [ "path", "servicePort" ],
+      "properties": {
+        "path": {
+          "title":"Path",
+          "type": "string",
+          "default": "/"
+        },
+        "servicePort": {
+          "title": "Service Port",
+          "type": "integer"
+        }
+      }
+    },
+    "ingressHost": {
+      "type": "object",
+      "properties": {
+        "host":{
+          "type":"string",
+          "title": "Domain"
+        },
+        "paths": {
+          "$ref": "#/definitions/ingressHostPath"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "title": "Domains Configuration",
+      "properties": {
+        "enabled": {
+          "title":"Enable",
+          "type":"boolean"
+        },
+        "annotations": {
+          "$ref": "#/definitions/annotation",
+          "default": {
+            "kubernetes.io/ingress.class": "kong"
+          }
+        },
+        "hosts": {
+          "title": "Domains",
+          "type": "array",
+          "items": {
+            "$ref":"#/definitions/ingressHost"
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "name":{
+          "type":"string",
+          "title": "Name"
+        },
+        "type": {
+          "type": "string",
+          "title": "Type",
+          "default": "ClusterIP"
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "$ref": "#/definitions/servicePort"
+          }
+        },
+        "ingress": {
+          "$ref": "#/definitions/ingress"
+        }
+      }
+    },
+    "hpa": {
+      "type": "object",
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable",
+          "default": false
+        },
+        "maxReplicas": {
+          "type": "number",
+          "title": "Maximum Replicas",
+          "default": 10
+        },
+        "cpu": {
+          "type": "number",
+          "title": "CPU Threshold",
+          "description": "Example: 60"
+        },
+        "memory": {
+          "type": "string",
+          "title": "Memory Threshold",
+          "description": "Example: 100Mi, 1Gi"
+        }
+      }
+    },
+    "container": {
+      "type": "object",
+      "required": [
+        "name",
+        "image"
+      ],
+      "properties": {
+        "name": {
+          "title": "Container Name",
+          "type": "string"
+        },
+        "image": {
+          "title": "Image Name & Tag",
+          "type": "string",
+          "description": "Full name of container image including tag. Example: nginx:latest"
+        },
+        "command": {
+          "type": "array",
+          "title": "Command",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "imagePullPolicy": {
+          "type": "string",
+          "title": "Pull Policy",
+          "default": "Always",
+          "enum": [
+            "Always",
+            "IfNotPresent"
+          ]
+        },
+        "ports": {
+          "type": "array",
+          "title": "Ports",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "containerPort": {
+                "type": "integer",
+                "title": "Container Port"
+              }
+            }
+          }
+        },
+        "env": {
+          "type": "array",
+          "title": "Environments",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Key"
+              },
+              "value": {
+                "type": "string",
+                "title": "Value"
+              }
+            }
+          }
+        },
+        "envFrom": {
+          "type": "array",
+          "title": "EnvFromSource",
+          "description": "EnvFromSource represents the source of a set of ConfigMaps/Secrets",
+          "items": {
+            "type": "object",
+            "properties": {
+              "secretRef": {
+                "type": "object",
+                "title": "The Secret to select from",
+                "description": "Secret referent",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "Secret Name",
+                    "description": "Name of the referent"
+                  },
+                  "optional": {
+                    "type": "boolean",
+                    "title": "Optional",
+                    "description": "Specify whether the Secret must be defined"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "resources": {
+          "title": "Resources",
+          "description": "Resources for each container in deployment pods...",
+          "$ref": "#/definitions/resources"
+        },
+        "volumeMounts": {
+          "type": "array",
+          "title": "Volume Mounts",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "mountPath": {
+                "title": "Mount Path",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "title": "Minimum Resources (aka \"Requests\" in Kubernetes)",
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "title": "CPU",
+              "type": "string",
+              "default": "100m",
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
+            },
+            "memory": {
+              "title": "Memory",
+              "type": "string",
+              "default": "256Mi",
+              "description": "You can express memory as a plain integer or as a fixed-point number using one of these suffixes: E, P, T, G, M, K. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki."
+            }
+          }
+        },
+        "limits": {
+          "title": "Maximum Resources (aka \"Limits\" in Kubernetes)",
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "title": "CPU",
+              "type": "string",
+              "default": "500m",
+              "description": "One cpu, in Kubernetes, is equivalent to 1 vCPU/Core for cloud providers and 1 hyperthread on bare-metal Intel processors. (1 CPU in Kubernetes = 1000m = 1vCPU/Core)"
+            },
+            "memory": {
+              "title": "Memory",
+              "type": "string",
+              "default": "1Gi",
+              "description": "You can express memory as a plain integer or as a fixed-point number using one of these suffixes: E, P, T, G, M, K. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki."
+            }
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "image": {
+      "title": "Main Image",
+      "$ref": "#/definitions/container"
+    },
+    "initContainers": {
+      "type": "array",
+      "title": "Init Containers",
+      "default": [],
+      "items": {
+        "$ref": "#/definitions/container"
+      }
+    },
+    "sidecars": {
+      "type": "array",
+      "title": "Sidecars",
+      "items": {
+        "$ref": "#/definitions/container"
+      }
+    },
+    "imagePullSecrets": {
+      "title": "Image Pull Secrets",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "title": "Secret Name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "services": {
+      "title": "Additional Services",
+      "type":"array",
+      "items": {
+        "$ref": "#/definitions/service"
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "title": "Deployment",
+      "required": [
+        "strategy"
+      ],
+      "properties": {
+        "strategy": {
+          "title": "Strategy",
+          "type": "string",
+          "default": "RollingUpdate",
+          "enum": [
+            "RollingUpdate",
+            "Recreate"
+          ]
+        }
+      }
+    },
+    "podAnnotations": {
+      "$ref": "#/definitions/annotation"
+    },
+    "volumes": {
+      "title": "Volumes",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "anyOf": [
+          {
+            "title": "AWS EBS GP2",
+            "required": [
+              "name",
+              "type",
+              "capability"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "ebs-gp2"
+              },
+              "capability": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          },
+          {
+            "title": "Amazon Elastic File System (AWS EFS)",
+            "required": [ "name", "type", "volumeHandler", "capability" ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "aws-efs"
+              },
+              "volumeHandler": {
+                "title": "Volume Handler ID",
+                "type": "string"
+              },
+              "capability": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          },
+          {
+            "title": "EmptyDir",
+            "required": [
+              "name",
+              "sizeLimit"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "type": {
+                "title": "Storage Class Name",
+                "type": "string",
+                "default": "emptydir"
+              },
+              "sizeLimit": {
+                "title": "Capability",
+                "type": "string",
+                "default": "10Gi"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "replicaCount": {
+      "title": "Replicas Count (Minimum Replicas)",
+      "type": "number",
+      "description": "a number of replicas indicating how many Pods it should be maintaining, and a pod template specifying the data of new Pods it should create to meet the number of replicas criteria.",
+      "default": 1
+    },
+    "hpa": {
+      "title": "HPA (Horizontal Pod Autoscaler)",
+      "$ref": "#/definitions/hpa"
+    }
+  }
+}
