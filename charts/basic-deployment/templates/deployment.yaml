@@ -39,10 +39,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.image }}"
-          {{- with .Values.image.command }}
-          command:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          command: ["bin/bash", "-c", "/var/www/html/.devpanel/re-config.sh"]
           imagePullPolicy: {{ .Values.image.imagePullPolicy }}
           {{- with .Values.image.env }}
           env:
