@@ -76,7 +76,7 @@ spec:
       {{ with .Values.volumes }}
       volumes:
       {{ range . }}
-      {{ if or (eq .type "do-block-storage") (eq .type "ebs-gp2") (eq .type "aws-ebs") (eq .type "csi-s3") }}
+      {{ if or (eq .type "do-block-storage") (eq .type "managed-standard") (eq .type "ebs-gp2") (eq .type "aws-ebs") (eq .type "csi-s3") }}
       - name: {{ .name }}
         persistentVolumeClaim:
           claimName: "{{ include "basic-hpa.fullname" $ }}-{{ .name }}"
