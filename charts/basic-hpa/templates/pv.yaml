@@ -1,7 +1,7 @@
 {{- if .Values.volumes }}
 {{- range .Values.volumes }}
 
-{{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") (eq .type "do-block-storage") (eq .type "csi-s3") (eq .type "managed-standard") (eq .type "premium") }}
+{{ if or (eq .type "ebs-gp2") (eq .type "aws-ebs") (eq .type "do-block-storage") (eq .type "csi-s3") (eq .type "azure-disk") (eq .type "premium") }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
