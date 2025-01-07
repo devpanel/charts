@@ -24,8 +24,8 @@ metadata:
   name: "{{ include "basic-deployment.fullname" $ }}-{{ .name }}"
   labels:
     {{- include "basic-deployment.labels" $ | nindent 4 }}
-  annotations:
   {{- with .ingress.annotations }}
+  annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
