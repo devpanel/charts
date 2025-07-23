@@ -8,7 +8,6 @@ kind: Service
 metadata:
   name: {{ $svcName }}
   labels:
-    test: test
     {{- include "basic-hpa.labels" $ | nindent 4 }}
 spec:
   type: {{ .type }}
