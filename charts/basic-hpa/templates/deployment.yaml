@@ -34,6 +34,7 @@ spec:
       initContainers:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      priorityClassName: {{ .Values.priorityClassName }}
       containers:
         - name: {{ .Values.image.name | default .Chart.Name }}
           securityContext:
